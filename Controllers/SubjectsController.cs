@@ -12,47 +12,47 @@ namespace Back_End_WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class SubjectsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public UsersController(ApplicationDbContext context)
+        public SubjectsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Subjects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<Subject>>> GetSubjects()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Subjects.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Subjects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<Subject>> GetSubject(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var subject = await _context.Subjects.FindAsync(id);
 
-            if (user == null)
+            if (subject == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return subject;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Subjects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutSubject(int id, Subject subject)
         {
-            if (id != user.UserID)
+            if (id != subject.SubjectID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(subject).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Back_End_WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!SubjectExists(id))
                 {
                     return NotFound();
                 }
@@ -73,37 +73,36 @@ namespace Back_End_WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Subjects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Subject>> PostSubject(Subject subject)
         {
-            _context.Users.Add(user);
+            _context.Subjects.Add(subject);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetUser", new { id = user.UserID }, user);
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserID }, user);
+            return CreatedAtAction("GetSubject", new { id = subject.SubjectID }, subject);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Subjects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteSubject(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var subject = await _context.Subjects.FindAsync(id);
+            if (subject == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            _context.Subjects.Remove(subject);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private bool SubjectExists(int id)
         {
-            return _context.Users.Any(e => e.UserID == id);
+            return _context.Subjects.Any(e => e.SubjectID == id);
         }
     }
 }
