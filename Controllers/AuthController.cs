@@ -49,16 +49,26 @@ namespace Back_End_WebAPI.Controllers
                 return BadRequest(new { message = "User role not found." });
             }
 
-         
+            String _role = "";
+            if (userRole.Contains("Professor"))
+            {
+                _role = "Professor";
+            }else if (userRole.Contains("Assistant"))
+            {
+                _role = "Professor";
+            }else if (userRole.Contains("GroupLeader"))
+            {
+                _role = "GroupLeader";
+            }
+            else if(userRole.Contains("Student"))
+            {
+                _role = "Student";
+            }
 
             return Ok(new
             {
-                message = "Login successful.",
-                userId = user.UserID,
-                email = user.Email,
-                firstName = user.FirstName,
-                lastName = user.LastName,
-                roles = String.Join(",",userRole)
+                userId = user.UserID,             
+                roles = _role
             });
         }
     }

@@ -70,10 +70,10 @@ namespace Back_End_WebAPI.Controllers
         }
 
         // DELETE: api/HasRoles/Delete/5
-        [HttpDelete("Delete{id}")]
-        public async Task<IActionResult> DeleteHasRole(int id)
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteHasRole(int id,string Role)
         {
-            var hasRole = await _context.HasRoles.FindAsync(id);
+            var hasRole = await _context.HasRoles.FindAsync(id,Role);
             if (hasRole == null)
             {
                 return NotFound();
