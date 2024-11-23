@@ -16,23 +16,56 @@ namespace Back_End_WebAPI.Controllers
     public class ExamsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        
 
         public ExamsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+
         // GET: api/Exams/Get
         [Route("Get")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Exam>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<ExamDTO>>> GetAsync()
         {
-            return await _context.Exams.ToListAsync();
+            var _exams = await _context.Exams.ToListAsync();
+            if(_exams == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<ExamDTO> listDTO= new List<ExamDTO>();
+                foreach(var exam in _exams)
+                {
+                    var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
+                    var _professor = await _context.Users.FindAsync(exam.ProfessorID);
+                    var _assistant = await _context.Users.FindAsync(exam.AssistantID);
+                    if (_professor == null || _subject == null || _assistant == null)
+                    {
+                        return NotFound();
+                    }
+                    listDTO.Add(new ExamDTO()
+                    {
+                        ExamID = (int)exam.ExamID,
+                        Group = exam.Group,
+                        SubjectName=_subject.SubjectName,
+                        ProfessorName = _professor.LastName + " " + _professor.FirstName,
+                        AssistantName = _assistant.LastName + " " + _assistant.FirstName,
+                        Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
+                        Location=exam.Location,
+                        Start_Time = exam.Start_Time
+
+                    });
+                }
+                return listDTO;
+            }
         }
 
         // GET: api/Exams/Get/5
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Exam>> GetAsync(int id)
+        public async Task<ActionResult<ExamDTO>> GetAsync(int id)
         {
             var exam = await _context.Exams.FindAsync(id);
 
@@ -40,13 +73,33 @@ namespace Back_End_WebAPI.Controllers
             {
                 return NotFound();
             }
+            var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
+            var _professor = await _context.Users.FindAsync(exam.ProfessorID);
+            var _assistant = await _context.Users.FindAsync(exam.AssistantID);
 
-            return exam;
+            if(_professor == null || _subject == null || _assistant == null)
+            {
+                return NotFound();
+            }
+
+            ExamDTO _examDTO = new ExamDTO()
+            {
+                ExamID = (int)exam.ExamID,
+                Group = exam.Group,
+                SubjectName = _subject.SubjectName,
+                ProfessorName = _professor.LastName + " " + _professor.FirstName,
+                AssistantName = _assistant.LastName + " " + _assistant.FirstName,
+                Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
+                Location = exam.Location,
+                Start_Time = exam.Start_Time
+
+            };
+            return _examDTO;
         }
 
         // GET: api/Exams/GetByGroup/5
         [HttpGet("GetByUserID{userID}")]
-        public async Task<ActionResult<IEnumerable<Exam>>> GetByUserIDAsync(int userID)
+        public async Task<ActionResult<IEnumerable<ExamDTO>>> GetByUserIDAsync(int userID)
         {
             List<Exam> filteredExams = new List<Exam>();
             var StudentGroup = await _context.StudentGroups.FindAsync(userID);
@@ -66,7 +119,33 @@ namespace Back_End_WebAPI.Controllers
                 return NotFound();
             }
 
-            return filteredExams;
+            List<ExamDTO> listDTO = new List<ExamDTO>();
+
+            foreach (var exam in filteredExams)
+            {
+                var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
+                var _professor = await _context.Users.FindAsync(exam.ProfessorID);
+                var _assistant = await _context.Users.FindAsync(exam.AssistantID);
+                if (_professor == null || _subject == null || _assistant == null)
+                {
+                    return NotFound();
+                }
+                listDTO.Add(new ExamDTO()
+                {
+                    ExamID = (int)exam.ExamID,
+                    Group = exam.Group,
+                    SubjectName = _subject.SubjectName,
+                    ProfessorName = _professor.LastName + " " + _professor.FirstName,
+                    AssistantName = _assistant.LastName + " " + _assistant.FirstName,
+                    Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
+                    Location = exam.Location,
+                    Start_Time = exam.Start_Time
+
+                });
+            }
+
+
+            return listDTO;
         }
  
        
