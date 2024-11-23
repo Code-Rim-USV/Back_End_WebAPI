@@ -20,18 +20,39 @@ namespace Back_End_WebAPI.Data
                     context.Users.AddRange(
                         new User
                         {
-                            FirstName = "John",
-                            LastName = "Pork",
-                            Password = "isCallingYou",
-                            Email = "john.pork@gmail.com"
+                            FirstName = "Ovidiu",
+                            LastName = "Gherman",
+                            Password = "OG12345",
+                            Email = "ovidiug@eed.usv.ro"
                         },
                         new User
                         {
-                            FirstName = "Jack",
-                            LastName = "Smith",
-                            Password = "pass123",
-                            Email = "smith9023@gmail.com"
-                        }
+                            FirstName = "Simona-Anda",
+                            LastName = "Tcaciuc",
+                            Password = "ST12345",
+                            Email = "tcaciuc.anda@usm.ro"
+                        },
+                        new User
+                        {
+                            FirstName = "Ionel",
+                            LastName = "Zagan",
+                            Password = "IZ12345",
+                            Email = "zagan@eed.usv.ro"
+                        },
+                        new User
+                        {
+                            FirstName = "Catalin",
+                            LastName = "Beguni",
+                            Password = "CB12345",
+                            Email = "catalin.beguni@usm.ro"
+                        },
+                         new User
+                         {
+                             FirstName = "Andrei",
+                             LastName = "Diaconu",
+                             Password = "AD12345",
+                             Email = "andrei.diaconu@usm.ro"
+                         } /// Asistanti
                     );
                     context.SaveChanges();
                 }

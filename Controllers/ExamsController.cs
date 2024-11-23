@@ -45,24 +45,20 @@ namespace Back_End_WebAPI.Controllers
         }
 
         // GET: api/Exams/GetByGroup/5
-        [HttpGet("GetByGroup/{group}")]
-        public async Task<ActionResult<IEnumerable<Exam>>> GetByGroupAsync(int group)
-        {
-            List<Exam> filteredExams = new List<Exam>();
-            await _context.Exams.ForEachAsync(e => { if (e.Group == group) { filteredExams.Add(e); }  });
-
-            if (filteredExams.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return filteredExams;
-        }
-        // GET: api/Exams/GetByUserID/5
-        [HttpGet("GetByUserID/{userID}")]
+        [HttpGet("GetByUserID{userID}")]
         public async Task<ActionResult<IEnumerable<Exam>>> GetByUserIDAsync(int userID)
         {
             List<Exam> filteredExams = new List<Exam>();
+            var StudentGroup = await _context.StudentGroups.FindAsync(userID);
+            if (StudentGroup == null)
+            {
+                //return NotFound();
+            }
+            else
+            {
+                await _context.Exams.ForEachAsync(e => { if (e.Group == StudentGroup.Group) { filteredExams.Add(e); } });
+
+            }
             await _context.Exams.ForEachAsync(e => { if (e.ProfessorID == userID || e.AssistantID == userID) { filteredExams.Add(e); } });
 
             if (filteredExams.Count == 0)
@@ -72,6 +68,8 @@ namespace Back_End_WebAPI.Controllers
 
             return filteredExams;
         }
+ 
+       
         // PUT: api/Exams/Put/5
         [HttpPut("Put/{id}")]
         public async Task<IActionResult> PutAsync(int id, Exam exam)
