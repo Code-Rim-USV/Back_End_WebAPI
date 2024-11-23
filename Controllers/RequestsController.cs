@@ -43,25 +43,20 @@ namespace Back_End_WebAPI.Controllers
 
             return request;
         }
-        // GET: api/Requests/GetByGroup/5
-        [HttpGet("GetByGroup/{group}")]
-        public async Task<ActionResult<IEnumerable<Request>>> GetByGroupAsync(int group)
-        {
-            List<Request> filteredRequests = new List<Request>();
-            await _context.Requests.ForEachAsync(e => { if (e.Group == group) { filteredRequests.Add(e); } });
-
-            if (filteredRequests.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return filteredRequests;
-        }
+     
         // GET: api/Requests/GetByUser/5
         [HttpGet("GetByUserID/{userID}")]
         public async Task<ActionResult<IEnumerable<Request>>> GetByUserIDAsync(int userID)
         {
+
             List<Request> filteredRequests = new List<Request>();
+
+            var StudentGroup = await _context.StudentGroups.FindAsync(userID);
+
+            if(StudentGroup != null)
+            {
+                await _context.Requests.ForEachAsync(e => { if (e.Group == StudentGroup.Group) { filteredRequests.Add(e); } });
+            }
             await _context.Requests.ForEachAsync(e => { if (e.ProfessorID == userID) { filteredRequests.Add(e); } });
 
             if (filteredRequests.Count == 0)
