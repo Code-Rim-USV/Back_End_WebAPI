@@ -21,16 +21,17 @@ namespace Back_End_WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/HasRoles
+        // GET: api/HasRoles/Get
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HasRole>>> GetHasRole()
+        [Route("Get")]
+        public async Task<ActionResult<IEnumerable<HasRole>>> GetAsync()
         {
             return await _context.HasRoles.ToListAsync();
         }
 
-        // GET: api/HasRoles/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<HasRole>> GetHasRole(int id)
+        // GET: api/HasRoles/Get/5
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<HasRole>> GetAsync(int id)
         {
             var hasRole = await _context.HasRoles.FindAsync(id);
 
@@ -42,27 +43,22 @@ namespace Back_End_WebAPI.Controllers
             return hasRole;
         }
 
-        // PUT: api/HasRoles/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutHasRole(int id, HasRole hasRole)
+
+        // POST: api/HasRoles
+        [Route("Post")]
+        [HttpPost]
+        public async Task<ActionResult<HasRole>> PostAsync(HasRole hasRole)
         {
-            if (id != hasRole.UserID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(hasRole).State = EntityState.Modified;
-
+            _context.HasRoles.Add(hasRole);
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!HasRoleExists(id))
+                if (HasRoleExists((int)(hasRole.UserID==null?-1: hasRole.UserID)))
                 {
-                    return NotFound();
+                    return Conflict();
                 }
                 else
                 {
@@ -70,22 +66,11 @@ namespace Back_End_WebAPI.Controllers
                 }
             }
 
-            return NoContent();
-        }
-
-        // POST: api/HasRoles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<HasRole>> PostHasRole(HasRole hasRole)
-        {
-            _context.HasRoles.Add(hasRole);
-            await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetHasRole", new { id = hasRole.UserID }, hasRole);
         }
 
-        // DELETE: api/HasRoles/5
-        [HttpDelete("{id}")]
+        // DELETE: api/HasRoles/Delete/5
+        [HttpDelete("Delete{id}")]
         public async Task<IActionResult> DeleteHasRole(int id)
         {
             var hasRole = await _context.HasRoles.FindAsync(id);

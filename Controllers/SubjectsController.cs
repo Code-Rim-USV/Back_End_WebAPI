@@ -21,15 +21,16 @@ namespace Back_End_WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Subjects
+        // GET: api/Subjects/Get
+        [Route("Get")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Subject>>> GetSubjects()
+        public async Task<ActionResult<IEnumerable<Subject>>> GetAync()
         {
             return await _context.Subjects.ToListAsync();
         }
 
-        // GET: api/Subjects/5
-        [HttpGet("{id}")]
+        // GET: api/Subjects/GetAsync/5
+        [HttpGet("Get/{id}")]
         public async Task<ActionResult<Subject>> GetSubject(int id)
         {
             var subject = await _context.Subjects.FindAsync(id);
@@ -41,10 +42,23 @@ namespace Back_End_WebAPI.Controllers
 
             return subject;
         }
+        // GET: api/Subjects/GetByUserID/5
+        [HttpGet("GetByUserID/{userID}")]
+        public async Task<ActionResult<IEnumerable<Subject>>> GetByUserIDAsync(int userID)
+        {
+            List<Subject> filteredSubjects = new List<Subject>();
+            await _context.Subjects.ForEachAsync(e => { if (e.ProfessorID == userID ) { filteredSubjects.Add(e); } });
 
-        // PUT: api/Subjects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+            if (filteredSubjects.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return filteredSubjects;
+        }
+        // PUT: api/Subjects/Put/5
+
+        [HttpPut("Put/{id}")]
         public async Task<IActionResult> PutSubject(int id, Subject subject)
         {
             if (id != subject.SubjectID)
@@ -73,19 +87,28 @@ namespace Back_End_WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Subjects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Subject>> PostSubject(Subject subject)
+        [Route("Post")]
+        public async Task<ActionResult<Subject>> PostAync(SubjectPostDTO subject)
         {
-            _context.Subjects.Add(subject);
+            Subject newSubject = new Subject()
+            {
+                SubjectID = null,
+                ProfessorID = subject.ProfessorID,
+                SubjectName = subject.SubjectName
+            };
+            _context.Subjects.Add(newSubject);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSubject", new { id = subject.SubjectID }, subject);
+            return  Ok(new
+            {
+                message = "Created subject.",
+               
+            });
         }
 
         // DELETE: api/Subjects/5
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {
             var subject = await _context.Subjects.FindAsync(id);

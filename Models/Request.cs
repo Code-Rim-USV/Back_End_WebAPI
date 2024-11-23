@@ -6,11 +6,25 @@ namespace Back_End_WebAPI.Models
     public class Request
     {
         [Key]
-        [Required]
-        public int UserID { get; set; }
+        public Nullable<int> RequestID { get; set; }
 
-        [Key]
+        
         [Required]
-        public int ExamID { get; set; }
+        [ForeignKey("Subject")]
+        public int SubjectID { get; set; }
+        [Required]
+        [ForeignKey("User")]
+        public int ProfessorID { get; set; }
+        [Required]
+        public int Group { get; set; }
+        [Required]
+
+        public DateOnly Date {  get; set; }
+        [Required]
+
+        public string Status { get; set; }
+
+        public string? RejectionReason {  get; set; }
+   
     }
 }

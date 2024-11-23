@@ -1,15 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
 namespace Back_End_WebAPI.Models
 {
-    public class Exam
+    public class ExamPostDTO
     {
-        [Key]
-        [AllowNull]
-        public Nullable<int> ExamID { get; set; }
-
         [Required]
         public int Group { get; set; }
 
@@ -32,9 +26,5 @@ namespace Back_End_WebAPI.Models
         public string Start_Time { get; set; }
         [Required]
         public string Location { get; set; }
-       
-      
-    
-
     }
 }

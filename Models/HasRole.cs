@@ -1,16 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Back_End_WebAPI.Models
 {
     public class HasRole
     {
         [Key]
-        public int UserID { get; set; }
+        [ForeignKey("User")]
+        [AllowNull]
+        public Nullable<int> UserID { get; set; }
 
-        [Required]
+        [Key]
         public string Role { get; set; }
-
-        // public User User { get; set; }
+       
     }
 }

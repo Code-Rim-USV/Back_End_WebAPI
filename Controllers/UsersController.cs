@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
+using System.Collections;
 
 namespace Back_End_WebAPI.Controllers
 {
+    //TO DO Protect passwords with a DTO
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -20,17 +22,19 @@ namespace Back_End_WebAPI.Controllers
         {
             _context = context;
         }
+        [Route("Get")]
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetAsync()
         {
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        // GET: api/Users/Get/5
+      
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<User>> GetAync(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -41,10 +45,46 @@ namespace Back_End_WebAPI.Controllers
 
             return user;
         }
+        // GET: api/Users/GetByGroup/5
+        [HttpGet("GetByGroup/{group}")]
+        public async Task<ActionResult<IEnumerable<User>>> GetByGroupAsync(int group)
+        {
 
+            List<int> listIDs = new List<int>();
+            await _context.StudentGroups.Where(e => e.Group == group).ForEachAsync(e => listIDs.Add((e.UserID != null ? (int)e.UserID : -1)));
+            
+
+            List<User> filteredUsers = new List<User>();
+            await _context.Users.ForEachAsync(e => { if (listIDs.Contains(e.UserID != null ? (int)e.UserID : -1)) { filteredUsers.Add(e); } });
+
+            if (filteredUsers.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return filteredUsers;
+        }
+        // GET: api/Users/GetByGroup/5
+        [HttpGet("GetByRole/{role}")]
+        public async Task<ActionResult<IEnumerable<User>>> GetByRoleAsync(string role)
+        {
+
+            List<int> listIDs = new List<int>();
+            await _context.HasRoles.Where(e => e.Role.Equals(role)).ForEachAsync(e => listIDs.Add((e.UserID != null ? (int)e.UserID : -1)));
+
+
+            List<User> filteredUsers = new List<User>();
+            await _context.Users.ForEachAsync(e => { if (listIDs.Contains(e.UserID != null ? (int)e.UserID : -1)) { filteredUsers.Add(e); } });
+
+            if (filteredUsers.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return filteredUsers;
+        }
         // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("Put/{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.UserID)
@@ -75,18 +115,33 @@ namespace Back_End_WebAPI.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        [Route("Post")]
+        public async Task<ActionResult<User>> PostAync(UserPostDTO user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetUser", new { id = user.UserID }, user);
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserID }, user);
+            User newUser = new User()
+            {
+                UserID = null,
+                FirstName=user.FirstName,
+                LastName=user.LastName,
+                Email=user.Email,
+                Password=user.Password,
+            };
+           
+            _context.Add(newUser);
+            await _context.SaveChangesAsync();
+            return  Ok(new
+            {
+                message = "Created user.",
+               
+            });
+            
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -105,5 +160,6 @@ namespace Back_End_WebAPI.Controllers
         {
             return _context.Users.Any(e => e.UserID == id);
         }
+      
     }
 }

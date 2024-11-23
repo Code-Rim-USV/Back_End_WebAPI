@@ -17,9 +17,10 @@ namespace Back_End_WebAPI.Controllers
             _context = context;
         }
         
-        // {urlBase}/Auth/UserLogin
+        // {urlBase}/Auth
+        
         [HttpPut]
-        public async Task<IActionResult> UserLogin(UserLoginDto userLoginDto)
+        public async Task<IActionResult> UserLogin(UserLoginDTO userLoginDto)
         {
             
 

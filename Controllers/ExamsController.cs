@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
+using System.Collections;
 
 namespace Back_End_WebAPI.Controllers
 {
@@ -21,16 +22,17 @@ namespace Back_End_WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Exams
+        // GET: api/Exams/Get
+        [Route("Get")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Exam>>> GetExams()
+        public async Task<ActionResult<IEnumerable<Exam>>> GetAsync()
         {
             return await _context.Exams.ToListAsync();
         }
 
-        // GET: api/Exams/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Exam>> GetExam(int id)
+        // GET: api/Exams/Get/5
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Exam>> GetAsync(int id)
         {
             var exam = await _context.Exams.FindAsync(id);
 
@@ -42,10 +44,37 @@ namespace Back_End_WebAPI.Controllers
             return exam;
         }
 
-        // PUT: api/Exams/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutExam(int id, Exam exam)
+        // GET: api/Exams/GetByGroup/5
+        [HttpGet("GetByGroup/{group}")]
+        public async Task<ActionResult<IEnumerable<Exam>>> GetByGroupAsync(int group)
+        {
+            List<Exam> filteredExams = new List<Exam>();
+            await _context.Exams.ForEachAsync(e => { if (e.Group == group) { filteredExams.Add(e); }  });
+
+            if (filteredExams.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return filteredExams;
+        }
+        // GET: api/Exams/GetByUserID/5
+        [HttpGet("GetByUserID/{userID}")]
+        public async Task<ActionResult<IEnumerable<Exam>>> GetByUserIDAsync(int userID)
+        {
+            List<Exam> filteredExams = new List<Exam>();
+            await _context.Exams.ForEachAsync(e => { if (e.ProfessorID == userID || e.AssistantID == userID) { filteredExams.Add(e); } });
+
+            if (filteredExams.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return filteredExams;
+        }
+        // PUT: api/Exams/Put/5
+        [HttpPut("Put/{id}")]
+        public async Task<IActionResult> PutAsync(int id, Exam exam)
         {
             if (id != exam.ExamID)
             {
@@ -73,20 +102,35 @@ namespace Back_End_WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Exams
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Exams/Post
         [HttpPost]
-        public async Task<ActionResult<Exam>> PostExam(Exam exam)
+        [Route("PostAync")]
+        public async Task<ActionResult<Exam>> PostAync(ExamPostDTO exam)
         {
-            _context.Exams.Add(exam);
+            Exam newExam = new Exam()
+            {
+                ExamID=null,
+                Group=exam.Group,
+                SubjectID=exam.SubjectID,
+                ProfessorID=exam.ProfessorID,
+                AssistantID=exam.AssistantID,
+                Date=exam.Date,
+                Start_Time=exam.Start_Time,
+                Location=exam.Location
+            };
+            _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetExam", new { id = exam.ExamID }, exam);
+            return Ok(new
+            {
+                message = "Created exam.",
+
+            });
         }
 
-        // DELETE: api/Exams/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExam(int id)
+        // DELETE: api/Exams/Delete/5
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             var exam = await _context.Exams.FindAsync(id);
             if (exam == null)
