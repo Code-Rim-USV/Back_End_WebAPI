@@ -72,7 +72,6 @@ namespace Back_End_WebAPI.Controllers
             return filteredRequests;
         }
         // PUT: api/Requests/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Put/{id}")]
         public async Task<IActionResult> PutAsync(int id, Request request)
         {
@@ -80,6 +79,43 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            _context.Entry(request).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RequestExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+        // PUT: api/Requests/5
+        [HttpPut("PutRejected/{id}")]
+        public async Task<IActionResult> PutAsync(int id, RequestPutDTO req)
+        {
+            if (id != req.RequestID)
+            {
+                return BadRequest();
+            }
+            var request = await _context.Requests.FindAsync(id);
+
+            if (request == null)
+            {
+                return BadRequest();
+            }
+            request.Status = "Rejected";
+            request.RejectionReason= req.RejectionReason;
 
             _context.Entry(request).State = EntityState.Modified;
 

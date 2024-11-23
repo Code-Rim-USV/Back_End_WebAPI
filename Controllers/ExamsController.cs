@@ -104,7 +104,7 @@ namespace Back_End_WebAPI.Controllers
 
         // POST: api/Exams/Post
         [HttpPost]
-        [Route("PostAync")]
+        [Route("Post")]
         public async Task<ActionResult<Exam>> PostAync(ExamPostDTO exam)
         {
             Exam newExam = new Exam()
@@ -120,6 +120,59 @@ namespace Back_End_WebAPI.Controllers
             };
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Created exam.",
+
+            });
+        }
+        // POST: api/Exams/PostWithRequestID
+        [HttpPost]
+        [Route("PostWithRequestID")]
+        public async Task<ActionResult<Exam>> PostAync(int RequestID,int AssistantID,String Start_Time,String Location)
+        {
+            var request = await _context.Requests.FindAsync(RequestID);
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            Exam newExam = new Exam()
+            {
+                ExamID = null,
+                Group = request.Group,
+                SubjectID = request.SubjectID,
+                ProfessorID = request.ProfessorID,
+                AssistantID = AssistantID,
+                Date = request.Date,
+                Start_Time =Start_Time ,
+                Location = Location
+            };
+            _context.Exams.Add(newExam);
+            await _context.SaveChangesAsync();
+
+            request.Status = "Accepted";
+
+
+            // Modify request
+            _context.Entry(request).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RequestExists(RequestID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return Ok(new
             {
@@ -147,6 +200,11 @@ namespace Back_End_WebAPI.Controllers
         private bool ExamExists(int id)
         {
             return _context.Exams.Any(e => e.ExamID == id);
+        }
+
+        private bool RequestExists(int id)
+        {
+            return _context.Requests.Any(e => e.RequestID == id);
         }
     }
 }
