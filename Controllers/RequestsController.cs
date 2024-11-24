@@ -186,12 +186,21 @@ namespace Back_End_WebAPI.Controllers
         [Route("Post")]
         public async Task<ActionResult<Request>> PostAsync(RequestPostDTO request)
         {
+            var _user = await _context.Users.FindAsync(request.UserID);
+            var _group = await _context.StudentGroups.FindAsync(request.UserID);
+            var _subject = await _context.Subjects.FindAsync(request.SubjectID);
+
+            if (_user == null || _group == null || _subject == null)
+            {
+                return BadRequest();
+            }
+
             Request newRequest = new Request()
             {
                 RequestID = null,
                 SubjectID = request.SubjectID,
-                ProfessorID = request.ProfessorID,
-                Group = request.Group,
+                ProfessorID = _subject.ProfessorID,
+                Group = _group.Group,
                 Date = request.Date,
                 Status = "Pending",
                 RejectionReason = null

@@ -6,16 +6,16 @@ namespace Back_End_WebAPI.Models
     public class RequestPostDTO
     {
         [Required]
+        [ForeignKey("User")]
+        public int UserID { set; get; }
+
+        [Required]
         [ForeignKey("Subject")]
         public int SubjectID { get; set; }
-        [Required]
-        [ForeignKey("User")]
-        public int ProfessorID { get; set; }
-        [Required]
-        public int Group { get; set; }
-        [Required]
 
+        [Required]
         public DateOnly Date { get; set; }
+
         
     }
 }
