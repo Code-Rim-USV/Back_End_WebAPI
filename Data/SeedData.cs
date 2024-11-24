@@ -188,27 +188,6 @@ namespace Back_End_WebAPI.Data
                     var userAluculesei = context.Users.FirstOrDefault(u => u.Email == "andrei.aluculesei@student.usv.ro");
                     var userMoscaliuc = context.Users.FirstOrDefault(u => u.Email == "timotei.moscaliuc@student.usv.ro");
 
-                    Console.WriteLine(userGherman.UserID);
-                    Console.WriteLine(userTcaciuc.UserID);
-                    Console.WriteLine(userZagan.UserID);
-                    Console.WriteLine(userBeguni.UserID);
-                    Console.WriteLine(userAurelia.UserID);
-                    Console.WriteLine(userDiaconu.UserID);
-                    Console.WriteLine(userPohoata.UserID);
-                    Console.WriteLine(userPrelipceanu.UserID);
-                    Console.WriteLine(userRotaru.UserID);
-                    Console.WriteLine(userSatco.UserID);
-                    Console.WriteLine(userHopulele.UserID);
-                    Console.WriteLine(userPentiuc.UserID);
-                    Console.WriteLine(userMeglei.UserID);
-                    Console.WriteLine(userRosca.UserID);
-                    Console.WriteLine(userMunteanu.UserID);
-                    Console.WriteLine(userJoroveanu.UserID);
-                    Console.WriteLine(userAydogan.UserID);
-                    Console.WriteLine(userTibuleac.UserID);
-                    Console.WriteLine(userAluculesei.UserID);
-                    Console.WriteLine(userMoscaliuc.UserID);
-
                     await context.HasRoles.AddAsync(
                         new HasRole
                         {
