@@ -207,12 +207,19 @@ namespace Back_End_WebAPI.Controllers
         // POST: api/Exams/PostWithRequestID
         [HttpPost]
         [Route("PostWithRequestID")]
-        public async Task<ActionResult<Exam>> PostAync(int RequestID,int AssistantID,String Start_Time,String Location)
+        public async Task<ActionResult<Exam>> PostWithRequestIDAync(ExamPostWithRequestDTO exam)
         {
-            var request = await _context.Requests.FindAsync(RequestID);
-            if (request == null)
+            var request = await _context.Requests.FindAsync(exam.RequestID);
+            var assitant = await _context.Users.FindAsync(exam.AssistantID);
+            var role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
+            if (request == null || assitant == null || role == null) 
             {
                 return NotFound();
+            }
+
+            if(request.Status != null && request.Status.CompareTo("Pending") != 0)
+            {
+                return BadRequest("Request already aproved or rejected");
             }
 
             Exam newExam = new Exam()
@@ -221,10 +228,10 @@ namespace Back_End_WebAPI.Controllers
                 Group = request.Group,
                 SubjectID = request.SubjectID,
                 ProfessorID = request.ProfessorID,
-                AssistantID = AssistantID,
+                AssistantID = exam.AssistantID,
                 Date = request.Date,
-                Start_Time =Start_Time ,
-                Location = Location
+                Start_Time =exam.Start_Time ,
+                Location = exam.Location
             };
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
@@ -241,7 +248,7 @@ namespace Back_End_WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RequestExists(RequestID))
+                if (!RequestExists(exam.RequestID))
                 {
                     return NotFound();
                 }

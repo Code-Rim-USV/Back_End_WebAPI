@@ -7,15 +7,13 @@ namespace Back_End_WebAPI.Models
     {
         [Required]
         [ForeignKey("User")]
-        public int UserID { set; get; }
-
+        public int UserID { get; set; }
         [Required]
         [ForeignKey("Subject")]
         public int SubjectID { get; set; }
-
         [Required]
-        public DateOnly Date { get; set; }
 
+        public DateOnly Date { get; set; }
         
     }
 }

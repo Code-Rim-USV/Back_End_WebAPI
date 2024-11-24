@@ -94,7 +94,7 @@ namespace Back_End_WebAPI.Controllers
      
         // GET: api/Requests/GetByUser/5
         [HttpGet("GetByUserID/{userID}")]
-        public async Task<ActionResult<IEnumerable<Request>>> GetByUserIDAsync(int userID)
+        public async Task<ActionResult<IEnumerable<RequestDTO>>> GetByUserIDAsync(int userID)
         {
 
             List<Request> filteredRequests = new List<Request>();
@@ -112,7 +112,32 @@ namespace Back_End_WebAPI.Controllers
                 return NotFound();
             }
 
-            return filteredRequests;
+
+            List<RequestDTO> requestsDTO = new List<RequestDTO>();
+            foreach(var req in filteredRequests)
+            {
+                var _subject = await _context.Subjects.FindAsync(req.SubjectID);
+                var _professor = await _context.Users.FindAsync(req.ProfessorID);
+                if (_professor == null || _subject == null)
+                {
+                    return NotFound();
+                }
+                requestsDTO.Add(new RequestDTO()
+                {
+                    RequestID = (int)req.RequestID,
+                    SubjectName = _subject.SubjectName,
+                    ProfessorName = _professor.LastName + " " + _professor.FirstName,
+                    Group = req.Group,
+                    Date = req.Date.Day + "." + req.Date.Month + "." + req.Date.Year,
+                    Status = req.Status,
+                    RejectionReason = req.RejectionReason
+
+                });
+            }
+
+
+
+            return requestsDTO;
         }
         // PUT: api/Requests/5
         [HttpPut("Put/{id}")]
