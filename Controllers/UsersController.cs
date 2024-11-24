@@ -26,28 +26,42 @@ namespace Back_End_WebAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync()
         {
-            return await _context.Users.ToListAsync();
+            List<UserDTO> filteredUsers = new List<UserDTO>();
+            await _context.Users.ForEachAsync(e => filteredUsers.Add(new UserDTO
+            {
+                UserID = (int)e.UserID,
+                UserName = e.LastName + " " + e.FirstName,
+                Email = e.Email
+
+            }));
+            return filteredUsers;
         }
 
         // GET: api/Users/Get/5
       
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<User>> GetAync(int id)
+        public async Task<ActionResult<UserDTO>> GetAync(int id)
         {
             var user = await _context.Users.FindAsync(id);
-
             if (user == null)
             {
                 return NotFound();
             }
+            UserDTO userDTO =new UserDTO
+            {
+                UserID = (int)user.UserID,
+                UserName = user.LastName + " " + user.FirstName,
+                Email = user.Email
 
-            return user;
+            };
+
+            return userDTO;
         }
         // GET: api/Users/GetByGroup/5
         [HttpGet("GetByGroup/{group}")]
-        public async Task<ActionResult<IEnumerable<User>>> GetByGroupAsync(int group)
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetByGroupAsync(int group)
         {
 
             List<int> listIDs = new List<int>();
@@ -62,11 +76,24 @@ namespace Back_End_WebAPI.Controllers
                 return NotFound();
             }
 
-            return filteredUsers;
+            List<UserDTO> usersDTO = new List<UserDTO>();
+
+            foreach(var user in filteredUsers)
+            {
+                usersDTO.Add(new UserDTO
+                {
+                    UserID = (int)user.UserID,
+                    UserName = user.LastName + " " + user.FirstName,
+                    Email = user.Email
+
+                });
+            }
+
+            return usersDTO;
         }
         // GET: api/Users/GetByGroup/5
         [HttpGet("GetByRole/{role}")]
-        public async Task<ActionResult<IEnumerable<User>>> GetByRoleAsync(string role)
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetByRoleAsync(string role)
         {
 
             List<int> listIDs = new List<int>();
@@ -81,7 +108,20 @@ namespace Back_End_WebAPI.Controllers
                 return NotFound();
             }
 
-            return filteredUsers;
+            List<UserDTO> usersDTO = new List<UserDTO>();
+
+            foreach (var user in filteredUsers)
+            {
+                usersDTO.Add(new UserDTO
+                {
+                    UserID = (int)user.UserID,
+                    UserName = user.LastName + " " + user.FirstName,
+                    Email = user.Email
+
+                });
+            }
+
+            return usersDTO;
         }
         // PUT: api/Users/5
         [HttpPut("Put/{id}")]

@@ -113,8 +113,72 @@ namespace Back_End_WebAPI.Controllers
             }
 
 
+
             List<RequestDTO> requestsDTO = new List<RequestDTO>();
             foreach(var req in filteredRequests)
+            {
+                var _subject = await _context.Subjects.FindAsync(req.SubjectID);
+                var _professor = await _context.Users.FindAsync(req.ProfessorID);
+                if (_professor == null || _subject == null)
+                {
+                    return NotFound();
+                }
+                requestsDTO.Add(new RequestDTO()
+                {
+                    RequestID = (int)req.RequestID,
+                    SubjectName = _subject.SubjectName,
+                    ProfessorName = _professor.LastName + " " + _professor.FirstName,
+                    Group = req.Group,
+                    Date = req.Date.Day + "." + req.Date.Month + "." + req.Date.Year,
+                    Status = req.Status,
+                    RejectionReason = req.RejectionReason
+
+                });
+            }
+
+
+
+            return requestsDTO;
+        }
+        // GET: api/Requests/GetByUser/5
+        [HttpGet("GetByUserID/{userID}/{status}")]
+        public async Task<ActionResult<IEnumerable<RequestDTO>>> GetByUserIDAsync(int userID,string? status)
+        {
+
+            List<Request> filteredRequests = new List<Request>();
+
+            var StudentGroup = await _context.StudentGroups.FindAsync(userID);
+
+
+            if (StudentGroup != null)
+            {
+                if (status == null)
+                {
+                    await _context.Requests.ForEachAsync(e => { if (e.Group == StudentGroup.Group) { filteredRequests.Add(e); } });
+                }
+                else
+                {
+                    await _context.Requests.ForEachAsync(e => { if (e.Group == StudentGroup.Group && e.Status.CompareTo(status)==0) { filteredRequests.Add(e); } });
+                }
+            }
+            if (status == null)
+            {
+                await _context.Requests.ForEachAsync(e => { if (e.ProfessorID == userID) { filteredRequests.Add(e); } });
+            }
+            else
+            {
+                await _context.Requests.ForEachAsync(e => { if (e.ProfessorID == userID && e.Status.CompareTo(status)==0) { filteredRequests.Add(e); } });
+            }
+
+            if (filteredRequests.Count == 0)
+            {
+                return NotFound();
+            }
+
+
+
+            List<RequestDTO> requestsDTO = new List<RequestDTO>();
+            foreach (var req in filteredRequests)
             {
                 var _subject = await _context.Subjects.FindAsync(req.SubjectID);
                 var _professor = await _context.Users.FindAsync(req.ProfessorID);
