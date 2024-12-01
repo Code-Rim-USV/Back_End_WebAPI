@@ -13,11 +13,12 @@ namespace Back_End_WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class ExamsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        
 
+       
         public ExamsController(ApplicationDbContext context)
         {
             _context = context;
@@ -25,8 +26,10 @@ namespace Back_End_WebAPI.Controllers
 
 
         // GET: api/Exams/Get
+       
         [Route("Get")]
         [HttpGet]
+       
         public async Task<ActionResult<IEnumerable<ExamDTO>>> GetAsync()
         {
             var _exams = await _context.Exams.ToListAsync();
@@ -42,7 +45,8 @@ namespace Back_End_WebAPI.Controllers
                     var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
                     var _professor = await _context.Users.FindAsync(exam.ProfessorID);
                     var _assistant = await _context.Users.FindAsync(exam.AssistantID);
-                    if (_professor == null || _subject == null || _assistant == null)
+                    var _location = await _context.Locations.FindAsync(exam.LocationID);
+                    if (_professor == null || _subject == null || _assistant == null || _location == null)
                     {
                         return NotFound();
                     }
@@ -54,7 +58,7 @@ namespace Back_End_WebAPI.Controllers
                         ProfessorName = _professor.LastName + " " + _professor.FirstName,
                         AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                         Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
-                        Location=exam.Location,
+                        Location=_location.LocationName,
                         Start_Time = exam.Start_Time
 
                     });
@@ -76,8 +80,8 @@ namespace Back_End_WebAPI.Controllers
             var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
             var _professor = await _context.Users.FindAsync(exam.ProfessorID);
             var _assistant = await _context.Users.FindAsync(exam.AssistantID);
-
-            if(_professor == null || _subject == null || _assistant == null)
+            var _location = await _context.Locations.FindAsync(exam.LocationID);
+            if (_professor == null || _subject == null || _assistant == null || _location == null)
             {
                 return NotFound();
             }
@@ -90,7 +94,7 @@ namespace Back_End_WebAPI.Controllers
                 ProfessorName = _professor.LastName + " " + _professor.FirstName,
                 AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                 Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
-                Location = exam.Location,
+                Location = _location.LocationName,
                 Start_Time = exam.Start_Time
 
             };
@@ -126,7 +130,8 @@ namespace Back_End_WebAPI.Controllers
                 var _subject = await _context.Subjects.FindAsync(exam.SubjectID);
                 var _professor = await _context.Users.FindAsync(exam.ProfessorID);
                 var _assistant = await _context.Users.FindAsync(exam.AssistantID);
-                if (_professor == null || _subject == null || _assistant == null)
+                var _location = await _context.Locations.FindAsync(exam.LocationID);
+                if (_professor == null || _subject == null || _assistant == null || _location == null)
                 {
                     return NotFound();
                 }
@@ -138,7 +143,7 @@ namespace Back_End_WebAPI.Controllers
                     ProfessorName = _professor.LastName + " " + _professor.FirstName,
                     AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                     Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
-                    Location = exam.Location,
+                    Location = _location.LocationName,
                     Start_Time = exam.Start_Time
 
                 });
@@ -193,7 +198,7 @@ namespace Back_End_WebAPI.Controllers
                 AssistantID=exam.AssistantID,
                 Date=exam.Date,
                 Start_Time=exam.Start_Time,
-                Location=exam.Location
+                LocationID=exam.LocationID
             };
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
@@ -231,7 +236,7 @@ namespace Back_End_WebAPI.Controllers
                 AssistantID = exam.AssistantID,
                 Date = request.Date,
                 Start_Time =exam.Start_Time ,
-                Location = exam.Location
+                LocationID = exam.LocationID
             };
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();

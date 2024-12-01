@@ -17,7 +17,7 @@ namespace Back_End_WebAPI.Data
         public DbSet<Exam> Exams { get; set; } = null!;
 
         public DbSet<Request> Requests { get; set; }
-
+        public DbSet<Location> Locations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,7 +31,7 @@ namespace Back_End_WebAPI.Data
             modelBuilder.Entity<Request>().ToTable("Requests");
             modelBuilder.Entity<HasRole>().ToTable("HasRoles");
             modelBuilder.Entity<StudentGroup>().ToTable("StudentGroup");
-            
+            modelBuilder.Entity<Location>().ToTable("Locations");
            
            
 

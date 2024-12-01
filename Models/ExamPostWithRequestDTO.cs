@@ -12,7 +12,7 @@ namespace Back_End_WebAPI.Models
         [ForeignKey("User")]
         public int AssistantID { get; set; }
         public string Start_Time { get; set; }
-        [Required]
-        public string Location { get; set; }
+        [ForeignKey("Location")]
+        public int LocationID { get; set; }
     }
 }

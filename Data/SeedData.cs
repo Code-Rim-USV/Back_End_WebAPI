@@ -163,9 +163,44 @@ namespace Back_End_WebAPI.Data
                     );
                     context.SaveChanges();
                 }
-
-                // Seed HasRoles
-                if (!context.HasRoles.Any())
+                // Seed Locations
+                if (!context.Locations.Any())
+                {
+                    context.Locations.AddRange(
+                        new Location
+                        {
+                            LocationName = "C201"
+                        }, new Location
+                        {
+                            LocationName = "C202"
+                        },
+                        new Location
+                        {
+                            LocationName = "C203"
+                        },
+                        new Location
+                        {
+                            LocationName = "C204"
+                        },
+                        new Location
+                        {
+                            LocationName = "C301"
+                        },
+                        new Location
+                        {
+                            LocationName = "C303"
+                        }, new Location
+                        {
+                            LocationName = "Amfiteatrul Dimitrie Hurmuzescu"
+                        },
+                        new Location
+                        {
+                            LocationName = "Amfiteatrul Remus Radulet"
+                        }
+                        );
+                }
+                    // Seed HasRoles
+                    if (!context.HasRoles.Any())
                 {
                     var userGherman = context.Users.Where(u => u.Email == "ovidiug@eed.usv.ro").First();
                     var userTcaciuc = context.Users.FirstOrDefault(u => u.Email == "tcaciuc.anda@usm.ro");
@@ -525,6 +560,11 @@ namespace Back_End_WebAPI.Data
 
                     var sub1 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Proiectarea Translatoarelor");
                     var sub2 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Metode Numerice");
+
+
+                    var loc1 = context.Locations.FirstOrDefault(u => u.LocationName == "C201");
+                    var loc2 = context.Locations.FirstOrDefault(l => l.LocationName == "C301");
+                    var loc3 = context.Locations.FirstOrDefault(u => u.LocationName == "C202");
                     context.Exams.AddRange(
                         new Exam
                         {
@@ -534,7 +574,7 @@ namespace Back_End_WebAPI.Data
                             AssistantID = (int)userBeguni.UserID,
                             Date = DateOnly.Parse("2025-03-20"),
                             Start_Time = "12:00PM",
-                            Location = "C203"
+                            LocationID = (int)loc1.LocationID
                         },
                         new Exam
                         {
@@ -544,7 +584,7 @@ namespace Back_End_WebAPI.Data
                             AssistantID = (int)userPohoata.UserID,
                             Date = DateOnly.Parse("2025-03-22"),
                             Start_Time = "16:00PM",
-                            Location = "C207"
+                            LocationID = (int)loc2.LocationID
                         },
                         new Exam
                         {
@@ -554,7 +594,7 @@ namespace Back_End_WebAPI.Data
                             AssistantID = (int)userBeguni.UserID,
                             Date = DateOnly.Parse("2025-03-15"),
                             Start_Time = "8:00AM",
-                            Location = "C204"
+                            LocationID = (int)loc3.LocationID
                         }
                         );
 

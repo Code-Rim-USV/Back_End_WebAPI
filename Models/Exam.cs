@@ -31,7 +31,7 @@ namespace Back_End_WebAPI.Models
 
         public string Start_Time { get; set; }
         [Required]
-        public string Location { get; set; }
+        public int LocationID { get; set; }
        
       
     
