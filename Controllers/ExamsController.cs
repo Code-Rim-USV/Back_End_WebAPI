@@ -217,15 +217,26 @@ namespace Back_End_WebAPI.Controllers
             var request = await _context.Requests.FindAsync(exam.RequestID);
             var assitant = await _context.Users.FindAsync(exam.AssistantID);
             var role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
-            if (request == null || assitant == null || role == null) 
+            var location = await _context.Locations.FindAsync(exam.LocationID);
+            if (request == null || assitant == null || role == null || location ==null) 
             {
-                return NotFound();
+               return NotFound();
             }
 
             if(request.Status != null && request.Status.CompareTo("Pending") != 0)
             {
                 return BadRequest("Request already aproved or rejected");
             }
+            
+             var existingExam = await _context.Exams
+                .SingleOrDefaultAsync(u => (u.Group == request.Group && u.SubjectID==request.SubjectID));
+
+            if (existingExam != null) {
+                return BadRequest("There already exists an exam for that request");
+            }
+
+
+
 
             Exam newExam = new Exam()
             {
