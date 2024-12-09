@@ -157,9 +157,9 @@ namespace Back_End_WebAPI.Controllers
         }
  
        
-        // PUT: api/Exams/Put/5
-        [HttpPut("Put/{id}")]
-        public async Task<IActionResult> PutAsync(int id, Exam exam)
+        // PUT: api/Exams/PutAll/5
+        [HttpPut("PutAll/{id}")]
+        public async Task<IActionResult> PutAllAsync(int id, Exam exam)
         {
             if (id != exam.ExamID)
             {
@@ -167,6 +167,150 @@ namespace Back_End_WebAPI.Controllers
             }
 
             _context.Entry(exam).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ExamExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+        // PUT: api/Exams/Put/5
+        [HttpPut("Put/{id}")]
+        public async Task<IActionResult> PutAsync(int id, ExamPutDTO exam)
+        {
+            if (id != exam.ExamID)
+            {
+                return BadRequest();
+            }
+            var _exam = await _context.Exams.FirstOrDefaultAsync(e =>  e.ExamID==exam.ExamID);
+            var _assistant = await _context.Users.FirstOrDefaultAsync(e => e.UserID==exam.AssistantID);
+            var _location = await _context.Locations.FirstOrDefaultAsync(e => e.LocationID==exam.LocationID);
+            var _role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
+            if ( _exam == null || _assistant == null || _location == null || _role == null)
+            {
+                return NotFound();
+            }
+            _exam.LocationID = exam.LocationID;
+            _exam.AssistantID = exam.AssistantID;
+            _exam.Start_Time = exam.Start_Time;
+
+
+            List<Exam> examList = await _context.Exams.ToListAsync();
+
+            foreach (var item in examList)
+            {
+                if (item.LocationID == _exam.LocationID && item.Date.CompareTo(_exam.Date) == 0)
+                {
+                    int time1 = 0;
+                    int time2 = 0;
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = _exam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("There are already exams planned at that time");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+
+                }
+                if (item.ProfessorID == _exam.ProfessorID)
+                {
+                    int time1 = 0;
+                    int time2 = 0;
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = _exam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("Professor is already at another exam");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+                }
+                if (item.AssistantID == _exam.AssistantID)
+                {
+                    int time1 = 0;
+                    int time2 = 0;
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = _exam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("Assistant is already at another exam");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+                }
+            }
+            // Saves changes
+            _context.Entry(_exam).State = EntityState.Modified;
 
             try
             {
