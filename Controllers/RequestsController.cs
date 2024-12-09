@@ -294,7 +294,32 @@ namespace Back_End_WebAPI.Controllers
                 Status = "Pending",
                 RejectionReason = null
             };
-            _context.Requests.Add(newRequest);
+
+
+            // All the exams, now there is a need to check they dont overlap on the same date
+            List<Exam> examList = await _context.Exams.ToListAsync();
+
+            foreach (var item in examList)
+            {
+                if(item.Group==newRequest.Group && item.SubjectID == newRequest.SubjectID)
+                {
+                    return BadRequest("There already is an exam planned for this subject");
+                }
+                if (item.Group == newRequest.Group)
+                {
+                    int days_diff = item.Date.DayNumber - newRequest.Date.DayNumber;
+                    if (days_diff == 0 || days_diff == 1 || days_diff == -1)
+                    {
+                        return BadRequest("Exams date too close to eachother");
+                    }
+
+                }
+
+            }
+
+
+
+                _context.Requests.Add(newRequest);
             await _context.SaveChangesAsync();
             
             return Ok(new
