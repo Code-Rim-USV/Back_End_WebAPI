@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
 using System.Collections;
+using Humanizer;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Humanizer.Configuration;
 
 namespace Back_End_WebAPI.Controllers
 {
@@ -217,16 +220,25 @@ namespace Back_End_WebAPI.Controllers
             var request = await _context.Requests.FindAsync(exam.RequestID);
             var assitant = await _context.Users.FindAsync(exam.AssistantID);
             var role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
-            if (request == null || assitant == null || role == null) 
+            var location = await _context.Locations.FindAsync(exam.LocationID);
+            if (request == null || assitant == null || role == null || location ==null) 
             {
-                return NotFound();
+               return NotFound();
             }
 
             if(request.Status != null && request.Status.CompareTo("Pending") != 0)
             {
                 return BadRequest("Request already aproved or rejected");
             }
+            
+             var existingExam = await _context.Exams
+                .SingleOrDefaultAsync(u => (u.Group == request.Group && u.SubjectID==request.SubjectID));
 
+            if (existingExam != null) {
+                return BadRequest("There already exists an exam for that request");
+            }
+
+          
             Exam newExam = new Exam()
             {
                 ExamID = null,
@@ -238,6 +250,130 @@ namespace Back_End_WebAPI.Controllers
                 Start_Time =exam.Start_Time ,
                 LocationID = exam.LocationID
             };
+
+
+
+            // All the exams, now there is a need to check they dont overlap on the same date
+            List<Exam> examList = await _context.Exams.ToListAsync();
+
+            foreach (var item in examList)
+            {
+                if (item.Group == newExam.Group)
+                {
+                    int days_diff = item.Date.DayNumber - newExam.Date.DayNumber;
+                    if(days_diff == 0 || days_diff == 1 || days_diff == -1)
+                    {
+                        return BadRequest("Exams date too close to eachother");
+                    }
+
+                }
+                // Exams are considered to take around 3 hours
+                // Get Exams in the same location and date
+                if (item.LocationID == newExam.LocationID && item.Date.CompareTo(newExam.Date)==0)
+                {
+                    int time1 = 0;
+                    int time2 = 0;  
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = newExam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0,2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("There are already exams planned at that time");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+                   
+                }
+                if (item.ProfessorID == newExam.ProfessorID)
+                {
+                    int time1 = 0;
+                    int time2 = 0;
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = newExam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("Professor is already at another exam");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+                }
+                if (item.AssistantID == newExam.AssistantID)
+                {
+                    int time1 = 0;
+                    int time2 = 0;
+                    try
+                    {
+                        string[] time_split = item.Start_Time.Split(":");
+                        int x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time1 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time1 += x;
+
+                        time_split = newExam.Start_Time.Split(":");
+                        x = 0;
+                        Int32.TryParse(time_split[0], out x);
+                        time2 += x * 100;
+                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
+                        time2 += x;
+
+                        // Not be within 3 hours of eachother
+                        if (Math.Abs(time1 - time2) < 300)
+                        {
+                            return BadRequest("Assistant is already at another exam");
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("Bad StartTime");
+                    }
+
+                }
+
+
+
+
+            }
+
+
+
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
 
