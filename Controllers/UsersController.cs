@@ -152,10 +152,47 @@ namespace Back_End_WebAPI.Controllers
 
             return NoContent();
         }
+        // PUT: api/Users/5
+        [HttpPut("PutPassword/{id}")]
+        public async Task<IActionResult> PutUser(int id, UserPutPasssordDTO user)
+        {
+            if (id != user.UserID)
+            {
+                return BadRequest();
+            }
+            if (user.Password == null || user.Password.Length<3)
+            {
+                return BadRequest("Password too weak");
+            }
+            var _user = await _context.Users.FindAsync(user.UserID);
+            if (_user == null) {
+                return NotFound();
+            }
+            _user.Password=user.Password.Trim();
+            _context.Entry(_user).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        
+
         [HttpPost]
         [Route("Post")]
         public async Task<ActionResult<User>> PostAync(UserPostDTO user)
