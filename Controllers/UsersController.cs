@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
 using System.Collections;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Back_End_WebAPI.Controllers
 {
     //TO DO Protect passwords with a DTO
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

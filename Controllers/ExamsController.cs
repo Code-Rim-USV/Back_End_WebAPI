@@ -11,9 +11,11 @@ using System.Collections;
 using Humanizer;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Humanizer.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Back_End_WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
    
