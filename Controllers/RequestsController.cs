@@ -8,10 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
 using System.Net.Http.Headers;
+<<<<<<< HEAD
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+=======
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> 47d9ed3 (Added user session with JWT authorization)
 
 namespace Back_End_WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RequestsController : ControllerBase
