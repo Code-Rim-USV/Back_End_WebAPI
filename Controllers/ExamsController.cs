@@ -38,7 +38,7 @@ namespace Back_End_WebAPI.Controllers
             var _exams = await _context.Exams.ToListAsync();
             if(_exams == null)
             {
-                return NotFound();
+                return new List<ExamDTO>();
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Back_End_WebAPI.Controllers
                     var _location = await _context.Locations.FindAsync(exam.LocationID);
                     if (_professor == null || _subject == null || _assistant == null || _location == null)
                     {
-                        return NotFound();
+                        continue;
                     }
                     listDTO.Add(new ExamDTO()
                     {
@@ -112,20 +112,16 @@ namespace Back_End_WebAPI.Controllers
         {
             List<Exam> filteredExams = new List<Exam>();
             var StudentGroup = await _context.StudentGroups.FindAsync(userID);
-            if (StudentGroup == null)
-            {
-                //return NotFound();
-            }
-            else
+            if (StudentGroup != null)
             {
                 await _context.Exams.ForEachAsync(e => { if (e.Group == StudentGroup.Group) { filteredExams.Add(e); } });
-
             }
+           
             await _context.Exams.ForEachAsync(e => { if (e.ProfessorID == userID || e.AssistantID == userID) { filteredExams.Add(e); } });
 
             if (filteredExams.Count == 0)
             {
-                return NotFound();
+                return new List<ExamDTO>();
             }
 
             List<ExamDTO> listDTO = new List<ExamDTO>();
@@ -138,7 +134,7 @@ namespace Back_End_WebAPI.Controllers
                 var _location = await _context.Locations.FindAsync(exam.LocationID);
                 if (_professor == null || _subject == null || _assistant == null || _location == null)
                 {
-                    return NotFound();
+                    continue;
                 }
                 listDTO.Add(new ExamDTO()
                 {

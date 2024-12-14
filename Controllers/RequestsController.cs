@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
 using System.Net.Http.Headers;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Back_End_WebAPI.Controllers
 {
@@ -30,7 +31,7 @@ namespace Back_End_WebAPI.Controllers
             var _requests = await _context.Requests.ToListAsync();
             if(_requests == null)
             {
-                return NotFound();
+                return new List<RequestDTO>();
             }
             else
             {
@@ -41,7 +42,7 @@ namespace Back_End_WebAPI.Controllers
                     var _professor = await _context.Users.FindAsync(request.ProfessorID);
                     if (_professor == null || _subject == null)
                     {
-                        return NotFound();
+                        continue;
                     }
                     listDTO.Add(
                         new RequestDTO()
@@ -109,7 +110,7 @@ namespace Back_End_WebAPI.Controllers
 
             if (filteredRequests.Count == 0)
             {
-                return NotFound();
+                return new List<RequestDTO>(); ;
             }
 
 
@@ -121,7 +122,7 @@ namespace Back_End_WebAPI.Controllers
                 var _professor = await _context.Users.FindAsync(req.ProfessorID);
                 if (_professor == null || _subject == null)
                 {
-                    return NotFound();
+                    continue;
                 }
                 requestsDTO.Add(new RequestDTO()
                 {
@@ -172,7 +173,7 @@ namespace Back_End_WebAPI.Controllers
 
             if (filteredRequests.Count == 0)
             {
-                return NotFound();
+                return new List<RequestDTO>(); ;
             }
 
 
@@ -184,7 +185,7 @@ namespace Back_End_WebAPI.Controllers
                 var _professor = await _context.Users.FindAsync(req.ProfessorID);
                 if (_professor == null || _subject == null)
                 {
-                    return NotFound();
+                    continue ;
                 }
                 requestsDTO.Add(new RequestDTO()
                 {
