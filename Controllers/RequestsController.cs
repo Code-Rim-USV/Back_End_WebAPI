@@ -296,7 +296,23 @@ namespace Back_End_WebAPI.Controllers
                 RejectionReason = null
             };
 
+            List<Request> requestList = await _context.Requests.ToListAsync();
 
+            foreach (var item in requestList)
+            {
+                if (item.Group == newRequest.Group && item.SubjectID == newRequest.SubjectID && item.Status.Equals(Constants.RequestStatus.Rejected) == false)
+                {
+                    if (item.Status.Equals(Constants.RequestStatus.Accepted))
+                    {
+                        return BadRequest(Constants.HttpResponses.msg10);
+                    }
+                    else
+                    {
+                        return BadRequest(Constants.HttpResponses.msg19);
+                    }
+                    
+                }
+            }
             // All the exams, now there is a need to check they dont overlap on the same date
             List<Exam> examList = await _context.Exams.ToListAsync();
 
@@ -317,10 +333,12 @@ namespace Back_End_WebAPI.Controllers
                 }
 
             }
+          
 
 
 
-                _context.Requests.Add(newRequest);
+
+            _context.Requests.Add(newRequest);
             await _context.SaveChangesAsync();
             
             return Ok(new

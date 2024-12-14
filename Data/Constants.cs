@@ -22,6 +22,7 @@
             public const string msg16 = "Subiect adaugat";
             public const string msg17 = "Parola este prea slaba, minim 5 caractere";
             public const string msg18 = "Utilizator adaugat";
+            public const string msg19 = "Exista deja o cerere in procesare";
         }
         public static class RequestStatus
         {
