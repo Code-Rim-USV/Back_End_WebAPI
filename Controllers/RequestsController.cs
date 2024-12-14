@@ -304,14 +304,14 @@ namespace Back_End_WebAPI.Controllers
             {
                 if(item.Group==newRequest.Group && item.SubjectID == newRequest.SubjectID)
                 {
-                    return BadRequest("There already is an exam planned for this subject");
+                    return BadRequest("Exista deja un examen programat pentru aceasta disciplina");
                 }
                 if (item.Group == newRequest.Group)
                 {
                     int days_diff = item.Date.DayNumber - newRequest.Date.DayNumber;
                     if (days_diff == 0 || days_diff == 1 || days_diff == -1)
                     {
-                        return BadRequest("Exams date too close to eachother");
+                        return BadRequest("Examenele sunt prea aproape una, modifica data");
                     }
 
                 }
@@ -326,7 +326,7 @@ namespace Back_End_WebAPI.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                message = "Created request.",
+                message = "Cerere trimisa",
 
             });
         }

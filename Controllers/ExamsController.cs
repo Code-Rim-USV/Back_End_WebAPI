@@ -233,12 +233,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within a said duration
                         if (Math.Abs(time1 - time2) < item.Duration*100)
                         {
-                            return BadRequest("There are already exams planned at that time");
+                            return BadRequest("Sunt deja examene programate in acea perioada");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
 
@@ -266,12 +266,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Professor is already at another exam");
+                            return BadRequest("Profesorul participa deja la un alt examen");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
                 }
@@ -298,12 +298,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Assistant is already at another exam");
+                            return BadRequest("Asistentul participa deja la un alt examen");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
                 }
@@ -352,7 +352,7 @@ namespace Back_End_WebAPI.Controllers
 
             return Ok(new
             {
-                message = "Created exam.",
+                message = "Examen adaugat.",
 
             });
         }
@@ -372,14 +372,14 @@ namespace Back_End_WebAPI.Controllers
 
             if(request.Status != null && request.Status.CompareTo("Pending") != 0)
             {
-                return BadRequest("Request already aproved or rejected");
+                return BadRequest("Cerere deja aprobata sau respinsa");
             }
             
              var existingExam = await _context.Exams
                 .SingleOrDefaultAsync(u => (u.Group == request.Group && u.SubjectID==request.SubjectID));
 
             if (existingExam != null) {
-                return BadRequest("There already exists an exam for that request");
+                return BadRequest("Deja este un examen programat pentru acea cerere");
             }
 
           
@@ -408,7 +408,7 @@ namespace Back_End_WebAPI.Controllers
                     int days_diff = item.Date.DayNumber - newExam.Date.DayNumber;
                     if(days_diff == 0 || days_diff == 1 || days_diff == -1)
                     {
-                        return BadRequest("Exams date too close to eachother");
+                        return BadRequest("Examenele sunt prea aproape una, modifica data");
                     }
 
                 }
@@ -437,12 +437,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("There are already exams planned at that time");
+                            return BadRequest("Sunt deja examene programate in acea perioada");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
                    
@@ -470,12 +470,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Professor is already at another exam");
+                            return BadRequest("Profesorul participa deja la un alt examen");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
                 }
@@ -502,12 +502,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Assistant is already at another exam");
+                            return BadRequest("Asistentul participa deja la un alt examen");
                         }
                     }
                     catch
                     {
-                        return BadRequest("Bad StartTime");
+                        return BadRequest("Timpul de incepere nu este in format corect");
                     }
 
                 }
@@ -546,7 +546,7 @@ namespace Back_End_WebAPI.Controllers
 
             return Ok(new
             {
-                message = "Created exam.",
+                message = "Examen adaugat.",
 
             });
         }
