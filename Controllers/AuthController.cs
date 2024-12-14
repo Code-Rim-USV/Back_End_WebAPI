@@ -33,12 +33,12 @@ namespace Back_End_WebAPI.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { message = Constants.HttpResponses.msg12 });
             }
 
             if (user.Password != userLoginDto.Password)
             {
-                return Unauthorized(new { message = "Invalid email or password." });
+                return Unauthorized(new { message = Constants.HttpResponses.msg13 });
             }
             List<String> userRole = new List<string>();
            
@@ -50,23 +50,23 @@ namespace Back_End_WebAPI.Controllers
 
             if (userRole.Count==0)
             {
-                return BadRequest(new { message = "User role not found." });
+                return BadRequest(new { message = Constants.HttpResponses.msg14 });
             }
 
             String _role = "";
-            if (userRole.Contains("Professor"))
+            if (userRole.Contains(Constants.UserRoles.Professor))
             {
-                _role = "Professor";
-            }else if (userRole.Contains("Assistant"))
+                _role = Constants.UserRoles.Professor;
+            }else if (userRole.Contains(Constants.UserRoles.Assistant))
             {
-                _role = "Professor";
-            }else if (userRole.Contains("GroupLeader"))
+                _role = Constants.UserRoles.Professor;
+            }else if (userRole.Contains(Constants.UserRoles.GroupLeader))
             {
-                _role = "GroupLeader";
+                _role = Constants.UserRoles.GroupLeader;
             }
-            else if(userRole.Contains("Student"))
+            else if(userRole.Contains(Constants.UserRoles.Student))
             {
-                _role = "Student";
+                _role = Constants.UserRoles.Student;
             }
 
             return Ok(new

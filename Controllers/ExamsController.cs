@@ -196,7 +196,7 @@ namespace Back_End_WebAPI.Controllers
             var _exam = await _context.Exams.FirstOrDefaultAsync(e =>  e.ExamID==exam.ExamID);
             var _assistant = await _context.Users.FirstOrDefaultAsync(e => e.UserID==exam.AssistantID);
             var _location = await _context.Locations.FirstOrDefaultAsync(e => e.LocationID==exam.LocationID);
-            var _role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
+            var _role = await _context.HasRoles.FindAsync(exam.AssistantID, Constants.UserRoles.Assistant);
             if ( _exam == null || _assistant == null || _location == null || _role == null)
             {
                 return NotFound();
@@ -233,12 +233,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within a said duration
                         if (Math.Abs(time1 - time2) < item.Duration*100)
                         {
-                            return BadRequest("Sunt deja examene programate in acea perioada");
+                            return BadRequest(Constants.HttpResponses.msg1);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
 
@@ -266,12 +266,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Profesorul participa deja la un alt examen");
+                            return BadRequest(Constants.HttpResponses.msg3);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
                 }
@@ -298,12 +298,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Asistentul participa deja la un alt examen");
+                            return BadRequest(Constants.HttpResponses.msg4);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
                 }
@@ -352,7 +352,7 @@ namespace Back_End_WebAPI.Controllers
 
             return Ok(new
             {
-                message = "Examen adaugat.",
+                message = Constants.HttpResponses.msg5
 
             });
         }
@@ -363,23 +363,23 @@ namespace Back_End_WebAPI.Controllers
         {
             var request = await _context.Requests.FindAsync(exam.RequestID);
             var assitant = await _context.Users.FindAsync(exam.AssistantID);
-            var role = await _context.HasRoles.FindAsync(exam.AssistantID, "Assistant");
+            var role = await _context.HasRoles.FindAsync(exam.AssistantID, Constants.UserRoles.Assistant);
             var location = await _context.Locations.FindAsync(exam.LocationID);
             if (request == null || assitant == null || role == null || location ==null) 
             {
                return NotFound();
             }
 
-            if(request.Status != null && request.Status.CompareTo("Pending") != 0)
+            if(request.Status != null && request.Status.CompareTo(Constants.RequestStatus.Pending) != 0)
             {
-                return BadRequest("Cerere deja aprobata sau respinsa");
+                return BadRequest(Constants.HttpResponses.msg6);
             }
             
              var existingExam = await _context.Exams
                 .SingleOrDefaultAsync(u => (u.Group == request.Group && u.SubjectID==request.SubjectID));
 
             if (existingExam != null) {
-                return BadRequest("Deja este un examen programat pentru acea cerere");
+                return BadRequest(Constants.HttpResponses.msg7);
             }
 
           
@@ -408,7 +408,7 @@ namespace Back_End_WebAPI.Controllers
                     int days_diff = item.Date.DayNumber - newExam.Date.DayNumber;
                     if(days_diff == 0 || days_diff == 1 || days_diff == -1)
                     {
-                        return BadRequest("Examenele sunt prea aproape una, modifica data");
+                        return BadRequest(Constants.HttpResponses.msg8);
                     }
 
                 }
@@ -437,12 +437,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Sunt deja examene programate in acea perioada");
+                            return BadRequest(Constants.HttpResponses.msg9);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
                    
@@ -470,12 +470,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Profesorul participa deja la un alt examen");
+                            return BadRequest(Constants.HttpResponses.msg3);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
                 }
@@ -502,12 +502,12 @@ namespace Back_End_WebAPI.Controllers
                         // Not be within 3 hours of eachother
                         if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
-                            return BadRequest("Asistentul participa deja la un alt examen");
+                            return BadRequest(Constants.HttpResponses.msg4);
                         }
                     }
                     catch
                     {
-                        return BadRequest("Timpul de incepere nu este in format corect");
+                        return BadRequest(Constants.HttpResponses.msg2);
                     }
 
                 }
@@ -522,7 +522,7 @@ namespace Back_End_WebAPI.Controllers
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
 
-            request.Status = "Accepted";
+            request.Status = Constants.RequestStatus.Accepted;
 
 
             // Modify request
@@ -546,7 +546,7 @@ namespace Back_End_WebAPI.Controllers
 
             return Ok(new
             {
-                message = "Examen adaugat.",
+                message = Constants.HttpResponses.msg5,
 
             });
         }

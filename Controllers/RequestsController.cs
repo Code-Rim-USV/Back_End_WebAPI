@@ -247,7 +247,7 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
-            request.Status = "Rejected";
+            request.Status = Constants.RequestStatus.Rejected;
             request.RejectionReason= req.RejectionReason;
 
             _context.Entry(request).State = EntityState.Modified;
@@ -292,7 +292,7 @@ namespace Back_End_WebAPI.Controllers
                 ProfessorID = _subject.ProfessorID,
                 Group = _group.Group,
                 Date = request.Date,
-                Status = "Pending",
+                Status = Constants.RequestStatus.Pending,
                 RejectionReason = null
             };
 
@@ -304,14 +304,14 @@ namespace Back_End_WebAPI.Controllers
             {
                 if(item.Group==newRequest.Group && item.SubjectID == newRequest.SubjectID)
                 {
-                    return BadRequest("Exista deja un examen programat pentru aceasta disciplina");
+                    return BadRequest(Constants.HttpResponses.msg10);
                 }
                 if (item.Group == newRequest.Group)
                 {
                     int days_diff = item.Date.DayNumber - newRequest.Date.DayNumber;
                     if (days_diff == 0 || days_diff == 1 || days_diff == -1)
                     {
-                        return BadRequest("Examenele sunt prea aproape una, modifica data");
+                        return BadRequest(Constants.HttpResponses.msg8);
                     }
 
                 }
@@ -326,7 +326,7 @@ namespace Back_End_WebAPI.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                message = "Cerere trimisa",
+                message = Constants.HttpResponses.msg11
 
             });
         }

@@ -162,9 +162,9 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
-            if (user.Password == null || user.Password.Length<3)
+            if (user.Password == null || user.Password.Length<5)
             {
-                return BadRequest("Password too weak");
+                return BadRequest(Constants.HttpResponses.msg17);
             }
             var _user = await _context.Users.FindAsync(user.UserID);
             if (_user == null) {
@@ -213,7 +213,7 @@ namespace Back_End_WebAPI.Controllers
             await _context.SaveChangesAsync();
             return  Ok(new
             {
-                message = "Created user.",
+                message = Constants.HttpResponses.msg18,
                
             });
             

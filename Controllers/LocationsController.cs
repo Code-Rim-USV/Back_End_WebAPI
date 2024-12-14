@@ -88,7 +88,7 @@ namespace Back_End_WebAPI.Controllers
 
             return Ok(new
             {
-                message = "Created location.",
+                message = Constants.HttpResponses.msg15,
 
             });
         }
