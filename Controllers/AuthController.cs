@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Back_End_WebAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase

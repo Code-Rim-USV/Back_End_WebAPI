@@ -14,5 +14,6 @@ namespace Back_End_WebAPI.Models
         public string Start_Time { get; set; }
         [ForeignKey("Location")]
         public int LocationID { get; set; }
+        public int Duration { get; set; }
     }
 }

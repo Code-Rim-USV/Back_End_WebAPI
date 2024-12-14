@@ -27,5 +27,7 @@ namespace Back_End_WebAPI.Models
         [Required]
         [ForeignKey("Location")]
         public int LocationID { get; set; }
+        [Required]
+        public int Duration {  get; set; }
     }
 }

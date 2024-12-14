@@ -9,6 +9,7 @@ namespace Back_End_WebAPI.Models
         public int AssistantID { get; set; }
         public string Start_Time { get; set; }
         public int LocationID { get; set; }
+        public int Duration { get; set; }
        
     }
 }

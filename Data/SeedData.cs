@@ -43,6 +43,13 @@ namespace Back_End_WebAPI.Data
                         },
                         new User
                         {
+                            FirstName = "Cristina",
+                            LastName = "Turcu",
+                            Password = "CT12345",
+                            Email = "cristina@usm.ro"
+                        },
+                        new User
+                        {
                             FirstName = "Catalin",
                             LastName = "Beguni",
                             Password = "CB12345",
@@ -205,6 +212,7 @@ namespace Back_End_WebAPI.Data
                     var userGherman = context.Users.Where(u => u.Email == "ovidiug@eed.usv.ro").First();
                     var userTcaciuc = context.Users.FirstOrDefault(u => u.Email == "tcaciuc.anda@usm.ro");
                     var userZagan = context.Users.FirstOrDefault(u => u.Email == "zagan@eed.usv.ro");
+                    var userTurcu = context.Users.FirstOrDefault(u => u.Email == "cristina@usm.ro");
                     var userBeguni = context.Users.FirstOrDefault(u => u.Email == "catalin.beguni@usm.ro");
                     var userAurelia = context.Users.FirstOrDefault(u => u.Email == "aurelia@usm.ro");
                     var userDiaconu = context.Users.FirstOrDefault(u => u.Email == "andrei.diaconu@usm.ro");
@@ -230,7 +238,22 @@ namespace Back_End_WebAPI.Data
                             Role = "Professor"
                         }
                         );
-                    
+                    await context.HasRoles.AddAsync(
+                        new HasRole
+                        {
+                            UserID = userGherman.UserID,
+                            Role = "Assistant"
+                        }
+                        );
+                    await context.HasRoles.AddAsync(
+                        new HasRole
+                        {
+                            UserID = userTurcu.UserID,
+                            Role = "Professor"
+                        }
+                        );
+
+
                     await context.HasRoles.AddAsync(
                         new HasRole
                         {
@@ -477,11 +500,32 @@ namespace Back_End_WebAPI.Data
                     var userZagan = context.Users.FirstOrDefault(u => u.Email == "zagan@eed.usv.ro");
                     var userDiaconu = context.Users.FirstOrDefault(u => u.Email == "andrei.diaconu@usm.ro");
                     var userSatco = context.Users.FirstOrDefault(u => u.Email == "bisatco@eed.usv.ro");
+                    var userTurcu = context.Users.FirstOrDefault(u => u.Email == "cristina@usm.ro");
                     context.Subjects.AddRange(
                         new Subject
                         {
                             ProfessorID = (int)userGherman.UserID,
                             SubjectName = "Proiectarea Translatoarelor"
+                        },
+                        new Subject
+                        {
+                            ProfessorID = (int)userTurcu.UserID,
+                            SubjectName = "Elemente de grafică pe calculator"
+                        },
+                        new Subject
+                        {
+                            ProfessorID = (int)userTurcu.UserID,
+                            SubjectName = "Inteligență artificială"
+                        },
+                        new Subject
+                        {
+                            ProfessorID = (int)userTurcu.UserID,
+                            SubjectName = "Programarea interfețelor utilizator"
+                        },
+                        new Subject
+                        {
+                            ProfessorID = (int)userGherman.UserID,
+                            SubjectName = "Sisteme Inteligente"
                         },
                         new Subject
                         {
@@ -492,6 +536,11 @@ namespace Back_End_WebAPI.Data
                         {
                             ProfessorID = (int)userZagan.UserID,
                             SubjectName = "Protocoale de comunicații"
+                        },
+                        new Subject
+                        {
+                            ProfessorID = (int)userZagan.UserID,
+                            SubjectName = "Structura și organizarea calculatoarelor"
                         },
                         new Subject
                         {
@@ -513,11 +562,12 @@ namespace Back_End_WebAPI.Data
                 {
                     var userGherman = context.Users.FirstOrDefault(u => u.Email == "ovidiug@eed.usv.ro");
                     var userPrelipceanu = context.Users.FirstOrDefault(u => u.Email == "marius.prelipceanu@usm.ro");
-                    
+                    var userTurcu = context.Users.FirstOrDefault(u => u.Email == "cristina@usm.ro");
 
                     var sub1 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Proiectarea Translatoarelor");
                     var sub2 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Metode Numerice");
-
+                    var sub3 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Inteligență artificială");
+                    var sub4 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Sisteme Inteligente");
                     context.Requests.AddRange(
                         new Request
                         {
@@ -530,20 +580,48 @@ namespace Back_End_WebAPI.Data
                         },
                         new Request
                         {
-                            SubjectID = (int)sub2.SubjectID,
-                            ProfessorID = (int)userPrelipceanu.UserID,
-                            Group = 3141,
-                            Date = DateOnly.Parse("2025-03-17"),
+                            SubjectID = (int)sub1.SubjectID,
+                            ProfessorID = (int)userGherman.UserID,
+                            Group = 3143,
+                            Date = DateOnly.Parse("2025-03-14"),
                             Status = "Pending"
+
+                        },
+                        new Request
+                        {
+                            SubjectID = (int)sub4.SubjectID,
+                            ProfessorID = (int)userGherman.UserID,
+                            Group = 3141,
+                            Date = DateOnly.Parse("2025-03-16"),
+                            Status = "Pending"
+
+                        },
+
+                        new Request
+                        {
+                            SubjectID = (int)sub3.SubjectID,
+                            ProfessorID = (int)userTurcu.UserID,
+                            Group = 3141,
+                            Date = DateOnly.Parse("2025-03-10"),
+                            Status = "Accepted"
+
+                        },
+                        new Request
+                        {
+                            SubjectID = (int)sub3.SubjectID,
+                            ProfessorID = (int)userTurcu.UserID,
+                            Group = 3143,
+                            Date = DateOnly.Parse("2025-03-10"),
+                            Status = "Accepted"
 
                         },
                         new Request
                         {
                             SubjectID = (int)sub2.SubjectID,
                             ProfessorID = (int)userPrelipceanu.UserID,
-                            Group = 3143,
-                            Date = DateOnly.Parse("2025-03-20"),
-                            Status = "Pending"
+                            Group = 3141,
+                            Date = DateOnly.Parse("2025-03-22"),
+                            Status = "Accepted"
 
                         }
 
@@ -557,8 +635,9 @@ namespace Back_End_WebAPI.Data
                     var userPrelipceanu = context.Users.FirstOrDefault(u => u.Email == "marius.prelipceanu@usm.ro");
                     var userBeguni = context.Users.FirstOrDefault(u => u.Email == "catalin.beguni@usm.ro");
                     var userPohoata = context.Users.FirstOrDefault(u => u.Email == "sorinp@eed.usv.ro");
+                    var userTurcu = context.Users.FirstOrDefault(u => u.Email == "cristina@usm.ro");
 
-                    var sub1 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Proiectarea Translatoarelor");
+                    var sub1 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Inteligență artificială");
                     var sub2 = context.Subjects.FirstOrDefault(u => u.SubjectName == "Metode Numerice");
 
 
@@ -570,11 +649,12 @@ namespace Back_End_WebAPI.Data
                         {
                             Group = 3141,
                             SubjectID = (int)sub1.SubjectID,
-                            ProfessorID = (int)userGherman.UserID,
-                            AssistantID = (int)userBeguni.UserID,
-                            Date = DateOnly.Parse("2025-03-20"),
+                            ProfessorID = (int)userTurcu.UserID,
+                            AssistantID = (int)userGherman.UserID,
+                            Date = DateOnly.Parse("2025-03-10"),
                             Start_Time = "12:00PM",
-                            LocationID = (int)loc1.LocationID
+                            LocationID = (int)loc1.LocationID,
+                            Duration = 2
                         },
                         new Exam
                         {
@@ -584,17 +664,19 @@ namespace Back_End_WebAPI.Data
                             AssistantID = (int)userPohoata.UserID,
                             Date = DateOnly.Parse("2025-03-22"),
                             Start_Time = "16:00PM",
-                            LocationID = (int)loc2.LocationID
+                            LocationID = (int)loc2.LocationID,
+                            Duration = 2
                         },
                         new Exam
                         {
                             Group = 3143,
                             SubjectID = (int)sub1.SubjectID,
-                            ProfessorID = (int)userGherman.UserID,
+                            ProfessorID = (int)userTurcu.UserID,
                             AssistantID = (int)userBeguni.UserID,
-                            Date = DateOnly.Parse("2025-03-15"),
-                            Start_Time = "8:00AM",
-                            LocationID = (int)loc3.LocationID
+                            Date = DateOnly.Parse("2025-03-10"),
+                            Start_Time = "10:00PM",
+                            LocationID = (int)loc1.LocationID,
+                            Duration = 2
                         }
                         );
 

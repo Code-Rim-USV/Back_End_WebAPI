@@ -62,7 +62,8 @@ namespace Back_End_WebAPI.Controllers
                         AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                         Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
                         Location=_location.LocationName,
-                        Start_Time = exam.Start_Time
+                        Start_Time = exam.Start_Time,
+                        Duration = exam.Duration
 
                     });
                 }
@@ -98,7 +99,8 @@ namespace Back_End_WebAPI.Controllers
                 AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                 Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
                 Location = _location.LocationName,
-                Start_Time = exam.Start_Time
+                Start_Time = exam.Start_Time,
+                Duration = exam.Duration
 
             };
             return _examDTO;
@@ -147,7 +149,8 @@ namespace Back_End_WebAPI.Controllers
                     AssistantName = _assistant.LastName + " " + _assistant.FirstName,
                     Date = exam.Date.Day + "." + exam.Date.Month + "." + exam.Date.Year,
                     Location = _location.LocationName,
-                    Start_Time = exam.Start_Time
+                    Start_Time = exam.Start_Time,
+                    Duration = exam.Duration
 
                 });
             }
@@ -205,7 +208,7 @@ namespace Back_End_WebAPI.Controllers
             _exam.LocationID = exam.LocationID;
             _exam.AssistantID = exam.AssistantID;
             _exam.Start_Time = exam.Start_Time;
-
+            _exam.Duration = exam.Duration;
 
             List<Exam> examList = await _context.Exams.ToListAsync();
 
@@ -231,8 +234,8 @@ namespace Back_End_WebAPI.Controllers
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
 
-                        // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        // Not be within a said duration
+                        if (Math.Abs(time1 - time2) < item.Duration*100)
                         {
                             return BadRequest("There are already exams planned at that time");
                         }
@@ -265,7 +268,7 @@ namespace Back_End_WebAPI.Controllers
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
                             return BadRequest("Professor is already at another exam");
                         }
@@ -297,7 +300,7 @@ namespace Back_End_WebAPI.Controllers
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
                             return BadRequest("Assistant is already at another exam");
                         }
@@ -345,7 +348,8 @@ namespace Back_End_WebAPI.Controllers
                 AssistantID=exam.AssistantID,
                 Date=exam.Date,
                 Start_Time=exam.Start_Time,
-                LocationID=exam.LocationID
+                LocationID=exam.LocationID,
+                Duration=exam.Duration
             };
             _context.Exams.Add(newExam);
             await _context.SaveChangesAsync();
@@ -392,7 +396,8 @@ namespace Back_End_WebAPI.Controllers
                 AssistantID = exam.AssistantID,
                 Date = request.Date,
                 Start_Time =exam.Start_Time ,
-                LocationID = exam.LocationID
+                LocationID = exam.LocationID,
+                Duration = exam.Duration
             };
 
 
@@ -434,7 +439,7 @@ namespace Back_End_WebAPI.Controllers
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
                             return BadRequest("There are already exams planned at that time");
                         }
@@ -467,7 +472,7 @@ namespace Back_End_WebAPI.Controllers
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
                             return BadRequest("Professor is already at another exam");
                         }
@@ -499,7 +504,7 @@ namespace Back_End_WebAPI.Controllers
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < 300)
+                        if (Math.Abs(time1 - time2) < item.Duration * 100)
                         {
                             return BadRequest("Assistant is already at another exam");
                         }
