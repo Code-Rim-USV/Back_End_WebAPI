@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Back_End_WebAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -26,8 +26,8 @@ namespace Back_End_WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UserLogin(UserLoginDTO userLoginDto)
         {
-            
 
+        
             var user = await _context.Users
                 .SingleOrDefaultAsync(u => u.Email == userLoginDto.Email);
 
@@ -68,11 +68,12 @@ namespace Back_End_WebAPI.Controllers
             {
                 _role = Constants.UserRoles.Student;
             }
+      
 
             return Ok(new
             {
                 userId = user.UserID,             
-                roles = _role
+                roles = _role,
             });
         }
     }
