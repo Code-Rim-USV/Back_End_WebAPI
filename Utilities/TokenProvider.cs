@@ -12,7 +12,7 @@ namespace Back_End_WebAPI.Utilities
     {
         public string Create(User user)
         {
-            string secretKey = "passs123-wawwa-the-best-password-ever";
+            string secretKey = "gpRK5SXay9ZGQ7rl7T1Yl98dZMHc4h8GC8O1XYeQdBlJG75SeG";
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256);
 
@@ -23,7 +23,7 @@ namespace Back_End_WebAPI.Utilities
                         new Claim(JwtRegisteredClaimNames.Sub,user.UserID.ToString()),
                         new Claim(JwtRegisteredClaimNames.Email,user.Email)
                     ]),
-                Expires = DateTime.UtcNow.AddMinutes(2),
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = credentials,
                 Issuer = "Back_End_WebAPI",
                 Audience = "account"

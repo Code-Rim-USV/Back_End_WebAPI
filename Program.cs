@@ -1,8 +1,7 @@
 using Back_End_WebAPI.Data;
-<<<<<<< HEAD
-=======
+
 using Back_End_WebAPI.Utilities;
->>>>>>> 47d9ed3 (Added user session with JWT authorization)
+
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,9 +31,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         o.RequireHttpsMetadata = false;
         o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
+            /*
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)),
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
+            */
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("gpRK5SXay9ZGQ7rl7T1Yl98dZMHc4h8GC8O1XYeQdBlJG75SeG")),
+            ValidIssuer = "Back_End_WebAPI",
+            ValidAudience = "account",
             ClockSkew = TimeSpan.Zero
     
         };
