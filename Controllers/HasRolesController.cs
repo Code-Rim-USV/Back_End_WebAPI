@@ -33,11 +33,36 @@ namespace Back_End_WebAPI.Controllers
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<HasRole>> GetAsync(int id)
         {
-            var hasRole = await _context.HasRoles.FindAsync(id);
+            List<String> userRole = new List<string>();
+            HasRole hasRole =  new HasRole();
+            hasRole.UserID = id;
 
-            if (hasRole == null)
+            await _context.HasRoles
+               .Where(hr => hr.UserID == id)
+               .Select(hr => hr.Role)
+               .ForEachAsync<string>(e => userRole.Add(e));
+
+            if (userRole.Count == 0)
             {
                 return NotFound();
+            }
+
+            String _role = "";
+            if (userRole.Contains(Constants.UserRoles.Professor))
+            {
+                hasRole.Role = Constants.UserRoles.Professor;
+            }
+            else if (userRole.Contains(Constants.UserRoles.Assistant))
+            {
+                hasRole.Role = Constants.UserRoles.Professor;
+            }
+            else if (userRole.Contains(Constants.UserRoles.GroupLeader))
+            {
+                hasRole.Role = Constants.UserRoles.GroupLeader;
+            }
+            else if (userRole.Contains(Constants.UserRoles.Student))
+            {
+                hasRole.Role = Constants.UserRoles.Student;
             }
 
             return hasRole;
