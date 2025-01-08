@@ -217,6 +217,10 @@ namespace Back_End_WebAPI.Controllers
 
             foreach (var item in examList)
             {
+                if (item.ExamID == exam.ExamID)
+                {
+                    continue;
+                }
                 if (item.LocationID == newExam.LocationID && item.Date.CompareTo(newExam.Date) == 0 && item.ExamID!=exam.ExamID)
                 {
                     int time1 = 0;
