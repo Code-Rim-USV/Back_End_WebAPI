@@ -195,7 +195,7 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
-            var _exam = await _context.Exams.FirstOrDefaultAsync(e =>  e.ExamID==exam.ExamID);
+            var _exam = await _context.Exams.FirstOrDefaultAsync(e => e.ExamID == exam.ExamID);
             var _assistant = await _context.Users.FirstOrDefaultAsync(e => e.UserID==exam.AssistantID);
             var _location = await _context.Locations.FirstOrDefaultAsync(e => e.LocationID==exam.LocationID);
             var _role = await _context.HasRoles.FindAsync(exam.AssistantID, Constants.UserRoles.Assistant);
@@ -203,16 +203,27 @@ namespace Back_End_WebAPI.Controllers
             {
                 return NotFound();
             }
-            _exam.LocationID = exam.LocationID;
-            _exam.AssistantID = exam.AssistantID;
-            _exam.Start_Time = exam.Start_Time;
-            _exam.Duration = exam.Duration;
+            //_exam.LocationID = exam.LocationID;
+           // _exam.AssistantID = exam.AssistantID;
+          //  _exam.Start_Time = exam.Start_Time;
+           // _exam.Duration = exam.Duration;
+
+            Exam newExam = new Exam();
+            newExam.LocationID = exam.LocationID;
+            newExam.AssistantID = exam.AssistantID;
+            newExam.Start_Time = exam.Start_Time;
+            newExam.Duration = exam.Duration;
+            newExam.Date = _exam.Date;
 
             List<Exam> examList = await _context.Exams.ToListAsync();
 
             foreach (var item in examList)
             {
-                if (item.LocationID == _exam.LocationID && item.Date.CompareTo(_exam.Date) == 0)
+                if (item.ExamID == exam.ExamID)
+                {
+                    continue;
+                }
+                if (item.LocationID == newExam.LocationID && item.Date.CompareTo(newExam.Date) == 0 && item.ExamID!=exam.ExamID)
                 {
                     int time1 = 0;
                     int time2 = 0;
@@ -225,7 +236,7 @@ namespace Back_End_WebAPI.Controllers
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time1 += x;
 
-                        time_split = _exam.Start_Time.Split(":");
+                        time_split = newExam.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
@@ -258,7 +269,7 @@ namespace Back_End_WebAPI.Controllers
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time1 += x;
 
-                        time_split = _exam.Start_Time.Split(":");
+                        time_split = newExam.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
@@ -290,7 +301,7 @@ namespace Back_End_WebAPI.Controllers
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time1 += x;
 
-                        time_split = _exam.Start_Time.Split(":");
+                        time_split = newExam.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
@@ -310,6 +321,12 @@ namespace Back_End_WebAPI.Controllers
 
                 }
             }
+
+            _exam.LocationID = exam.LocationID;
+            _exam.AssistantID = exam.AssistantID;
+            _exam.Start_Time = exam.Start_Time;
+            _exam.Duration = exam.Duration;
+
             // Saves changes
             _context.Entry(_exam).State = EntityState.Modified;
 
