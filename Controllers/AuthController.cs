@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Net;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Back_End_WebAPI.Utilities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+using Back_End_WebAPI.Utilities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 
 namespace Back_End_WebAPI.Controllers
 {
@@ -13,12 +16,13 @@ namespace Back_End_WebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-
+        private readonly TokenProvider tokenProvider;
         private readonly ApplicationDbContext _context;
 
         public AuthController(ApplicationDbContext context)
         {
             _context = context;
+            tokenProvider = new TokenProvider();   
         }
         
         // {urlBase}/Auth
@@ -70,10 +74,14 @@ namespace Back_End_WebAPI.Controllers
             }
       
 
+            string token = tokenProvider.Create(user);
             return Ok(new
             {
                 userId = user.UserID,             
                 roles = _role,
+
+                token = token
+
             });
         }
     }

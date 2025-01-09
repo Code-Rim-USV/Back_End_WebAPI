@@ -10,8 +10,12 @@ using Back_End_WebAPI.Models;
 using System.Net.Http.Headers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using Microsoft.AspNetCore.Authorization;
+
+
 namespace Back_End_WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RequestsController : ControllerBase

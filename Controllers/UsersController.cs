@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Back_End_WebAPI.Controllers
 {
     //TO DO Protect passwords with a DTO
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

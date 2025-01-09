@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End_WebAPI.Data;
 using Back_End_WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Back_End_WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LocationsController : ControllerBase
