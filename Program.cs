@@ -54,7 +54,17 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(services);
 }
 
-
+app.Use(async (context, next) =>
+{
+    var metadataIp = "169.254.169.254";
+    if (context.Request.Host.Value.Contains(metadataIp) || context.Connection.RemoteIpAddress.ToString() == metadataIp)
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Access to metadata endpoint is forbidden");
+        return;
+    }
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
