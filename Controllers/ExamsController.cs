@@ -221,6 +221,11 @@ namespace Back_End_WebAPI.Controllers
             newExam.Duration = exam.Duration;
             newExam.Date = _exam.Date;
 
+            if (_exam.ProfessorID == exam.AssistantID)
+            {
+                return BadRequest(Constants.HttpResponses.msg21);
+            }
+
             List<Exam> examList = await _context.Exams.ToListAsync();
 
             foreach (var item in examList)
@@ -360,6 +365,10 @@ namespace Back_End_WebAPI.Controllers
         [Route("Post")]
         public async Task<ActionResult<Exam>> PostAync(ExamPostDTO exam)
         {
+            if (exam.ProfessorID == exam.AssistantID)
+            {
+                return BadRequest(Constants.HttpResponses.msg21);
+            }
             Exam newExam = new Exam()
             {
                 ExamID=null,
@@ -399,6 +408,11 @@ namespace Back_End_WebAPI.Controllers
             if (request.Status != null && request.Status.CompareTo(Constants.RequestStatus.Pending) != 0)
             {
                 return BadRequest(Constants.HttpResponses.msg6);
+            }
+
+            if (request.ProfessorID == exam.AssistantID)
+            { 
+                return BadRequest(Constants.HttpResponses.msg21);
             }
            
 

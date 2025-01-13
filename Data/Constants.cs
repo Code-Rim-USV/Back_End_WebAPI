@@ -24,6 +24,7 @@
             public const string msg18 = "Utilizator adaugat";
             public const string msg19 = "Exista deja o cerere in procesare";
             public const string msg20 = "Examenul nu poate fi programat in trecut";
+            public const string msg21 = "Asistentul nu poate fi aceasi persoana ca profesorul";
         }
         public static class RequestStatus
         {
