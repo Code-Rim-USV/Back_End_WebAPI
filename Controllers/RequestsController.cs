@@ -216,6 +216,11 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
+            if (request.Date <= DateOnly.FromDateTime(DateTime.Now))
+            {
+                return BadRequest(Constants.HttpResponses.msg20);
+
+            }
 
             _context.Entry(request).State = EntityState.Modified;
 
@@ -287,6 +292,12 @@ namespace Back_End_WebAPI.Controllers
             if (_user == null || _group == null || _subject == null)
             {
                 return BadRequest();
+            }
+
+            if (request.Date <= DateOnly.FromDateTime( DateTime.Now))
+            {
+                return BadRequest(Constants.HttpResponses.msg20);
+
             }
 
             Request newRequest = new Request()
