@@ -166,6 +166,11 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
+            if (exam.Date <= DateOnly.FromDateTime(DateTime.Now))
+            {
+                return BadRequest(Constants.HttpResponses.msg20);
+
+            }
 
             _context.Entry(exam).State = EntityState.Modified;
 
@@ -203,10 +208,11 @@ namespace Back_End_WebAPI.Controllers
             {
                 return NotFound();
             }
+           
             //_exam.LocationID = exam.LocationID;
-           // _exam.AssistantID = exam.AssistantID;
-          //  _exam.Start_Time = exam.Start_Time;
-           // _exam.Duration = exam.Duration;
+            // _exam.AssistantID = exam.AssistantID;
+            //  _exam.Start_Time = exam.Start_Time;
+            // _exam.Duration = exam.Duration;
 
             Exam newExam = new Exam();
             newExam.LocationID = exam.LocationID;
@@ -388,20 +394,27 @@ namespace Back_End_WebAPI.Controllers
             {
                return NotFound();
             }
+            
 
-            if(request.Status != null && request.Status.CompareTo(Constants.RequestStatus.Pending) != 0)
+            if (request.Status != null && request.Status.CompareTo(Constants.RequestStatus.Pending) != 0)
             {
                 return BadRequest(Constants.HttpResponses.msg6);
             }
-            
-             var existingExam = await _context.Exams
+           
+
+            var existingExam = await _context.Exams
                 .SingleOrDefaultAsync(u => (u.Group == request.Group && u.SubjectID==request.SubjectID));
 
             if (existingExam != null) {
                 return BadRequest(Constants.HttpResponses.msg7);
             }
 
-          
+            if (request.Date <= DateOnly.FromDateTime(DateTime.Now))
+            {
+                return BadRequest(Constants.HttpResponses.msg20);
+
+            }
+
             Exam newExam = new Exam()
             {
                 ExamID = null,
