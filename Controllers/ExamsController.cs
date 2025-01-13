@@ -228,6 +228,24 @@ namespace Back_End_WebAPI.Controllers
 
             List<Exam> examList = await _context.Exams.ToListAsync();
 
+            int time1 = 0;
+            string[] time_split = newExam.Start_Time.Split(":");
+            int x = 0;
+            Int32.TryParse(time_split[0], out x);
+            time1 += x * 100;
+            if (newExam.Start_Time.Contains("PM"))
+            {
+                time1 += 1200;
+            }
+            Int32.TryParse(time_split[1].Substring(0, 2), out x);
+            time1 += x;
+
+            if (time1 < 700 || time1 + newExam.Duration * 100 > 2100)
+            {
+                return BadRequest(Constants.HttpResponses.msg22);
+            }
+
+
             foreach (var item in examList)
             {
                 if (item.ExamID == exam.ExamID)
@@ -236,26 +254,23 @@ namespace Back_End_WebAPI.Controllers
                 }
                 if (item.LocationID == newExam.LocationID && item.Date.CompareTo(newExam.Date) == 0 && item.ExamID!=exam.ExamID)
                 {
-                    int time1 = 0;
                     int time2 = 0;
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
 
-                        time_split = newExam.Start_Time.Split(":");
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
 
                         // Not be within a said duration
-                        if (Math.Abs(time1 - time2) < item.Duration*100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration*100)
                         {
                             return BadRequest(Constants.HttpResponses.msg1);
                         }
@@ -269,26 +284,24 @@ namespace Back_End_WebAPI.Controllers
                 }
                 if (item.ProfessorID == _exam.ProfessorID)
                 {
-                    int time1 = 0;
                     int time2 = 0;
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
 
-                        time_split = newExam.Start_Time.Split(":");
+
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
 
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < item.Duration * 100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration * 100)
                         {
                             return BadRequest(Constants.HttpResponses.msg3);
                         }
@@ -301,26 +314,21 @@ namespace Back_End_WebAPI.Controllers
                 }
                 if (item.AssistantID == _exam.AssistantID)
                 {
-                    int time1 = 0;
                     int time2 = 0;
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
-
-                        time_split = newExam.Start_Time.Split(":");
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
-
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < item.Duration * 100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration * 100)
                         {
                             return BadRequest(Constants.HttpResponses.msg4);
                         }
@@ -368,6 +376,22 @@ namespace Back_End_WebAPI.Controllers
             if (exam.ProfessorID == exam.AssistantID)
             {
                 return BadRequest(Constants.HttpResponses.msg21);
+            }
+            int time1 = 0;
+            string[] time_split = exam.Start_Time.Split(":");
+            int x = 0;
+            Int32.TryParse(time_split[0], out x);
+            time1 += x * 100;
+            if (exam.Start_Time.Contains("PM"))
+            {
+                time1 += 1200;
+            }
+            Int32.TryParse(time_split[1].Substring(0, 2), out x);
+            time1 += x;
+
+            if (time1 < 700 || time1 + exam.Duration * 100 > 2100)
+            {
+                return BadRequest(Constants.HttpResponses.msg22);
             }
             Exam newExam = new Exam()
             {
@@ -442,6 +466,22 @@ namespace Back_End_WebAPI.Controllers
                 Duration = exam.Duration
             };
 
+            int time1 = 0;
+            string[] time_split = newExam.Start_Time.Split(":");
+            int x = 0;
+            Int32.TryParse(time_split[0], out x);
+            time1 += x * 100;
+            if (newExam.Start_Time.Contains("PM"))
+            {
+                time1 += 1200;
+            }
+            Int32.TryParse(time_split[1].Substring(0, 2), out x);
+            time1 += x;
+
+            if(time1<700 || time1 + newExam.Duration * 100 > 2100)
+            {
+                return BadRequest(Constants.HttpResponses.msg22);
+            }
 
 
             // All the exams, now there is a need to check they dont overlap on the same date
@@ -462,26 +502,22 @@ namespace Back_End_WebAPI.Controllers
                 // Get Exams in the same location and date
                 if (item.LocationID == newExam.LocationID && item.Date.CompareTo(newExam.Date)==0)
                 {
-                    int time1 = 0;
                     int time2 = 0;  
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
-
-                        time_split = newExam.Start_Time.Split(":");
+                      
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
                         Int32.TryParse(time_split[1].Substring(0,2), out x);
                         time2 += x;
-
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < item.Duration * 100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration * 100)
                         {
                             return BadRequest(Constants.HttpResponses.msg9);
                         }
@@ -495,26 +531,22 @@ namespace Back_End_WebAPI.Controllers
                 }
                 if (item.ProfessorID == newExam.ProfessorID)
                 {
-                    int time1 = 0;
                     int time2 = 0;
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
 
-                        time_split = newExam.Start_Time.Split(":");
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
-
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < item.Duration * 100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration * 100)
                         {
                             return BadRequest(Constants.HttpResponses.msg3);
                         }
@@ -527,26 +559,22 @@ namespace Back_End_WebAPI.Controllers
                 }
                 if (item.AssistantID == newExam.AssistantID)
                 {
-                    int time1 = 0;
                     int time2 = 0;
                     try
                     {
-                        string[] time_split = item.Start_Time.Split(":");
-                        int x = 0;
-                        Int32.TryParse(time_split[0], out x);
-                        time1 += x * 100;
-                        Int32.TryParse(time_split[1].Substring(0, 2), out x);
-                        time1 += x;
 
-                        time_split = newExam.Start_Time.Split(":");
+                        time_split = item.Start_Time.Split(":");
                         x = 0;
                         Int32.TryParse(time_split[0], out x);
                         time2 += x * 100;
                         Int32.TryParse(time_split[1].Substring(0, 2), out x);
                         time2 += x;
-
+                        if (item.Start_Time.Contains("PM"))
+                        {
+                            time2 += 1200;
+                        }
                         // Not be within 3 hours of eachother
-                        if (Math.Abs(time1 - time2) < item.Duration * 100)
+                        if (Math.Abs(time1 - time2) < newExam.Duration * 100)
                         {
                             return BadRequest(Constants.HttpResponses.msg4);
                         }
