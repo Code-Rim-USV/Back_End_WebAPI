@@ -170,9 +170,9 @@ namespace Back_End_WebAPI.Controllers
             if (_user == null) {
                 return NotFound();
             }
-            if (_user.Password.CompareTo(user.OldPassword) != 0)
+            if (user.OldPassword==null || _user.Password.CompareTo(user.OldPassword) != 0)
             {
-                return BadRequest(Constants.HttpResponses.msg22);
+                return BadRequest(Constants.HttpResponses.msg23);
             }
             _user.Password=user.NewPassword.Trim();
             _context.Entry(_user).State = EntityState.Modified;
