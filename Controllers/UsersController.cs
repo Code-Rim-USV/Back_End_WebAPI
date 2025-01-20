@@ -162,7 +162,7 @@ namespace Back_End_WebAPI.Controllers
             {
                 return BadRequest();
             }
-            if (user.Password == null || user.Password.Length<5)
+            if (user.NewPassword == null || user.NewPassword.Length<5)
             {
                 return BadRequest(Constants.HttpResponses.msg17);
             }
@@ -170,7 +170,11 @@ namespace Back_End_WebAPI.Controllers
             if (_user == null) {
                 return NotFound();
             }
-            _user.Password=user.Password.Trim();
+            if (_user.Password.CompareTo(user.OldPassword) != 0)
+            {
+                return BadRequest(Constants.HttpResponses.msg22);
+            }
+            _user.Password=user.NewPassword.Trim();
             _context.Entry(_user).State = EntityState.Modified;
 
             try
@@ -191,7 +195,7 @@ namespace Back_End_WebAPI.Controllers
 
             return NoContent();
         }
-
+       
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
