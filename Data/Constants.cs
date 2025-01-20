@@ -25,7 +25,7 @@
             public const string msg19 = "Exista deja o cerere in procesare";
             public const string msg20 = "Examenul nu poate fi programat in trecut";
             public const string msg21 = "Asistentul nu poate fi aceasi persoana ca profesorul";
-            public const string msg22 = "Parola veche nu este corecta";
+            public const string msg22 = "Examenul trebuie sa se desfasoare in perioada 7AM-9PM";
         }
         public static class RequestStatus
         {
